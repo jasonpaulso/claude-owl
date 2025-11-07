@@ -1,64 +1,27 @@
 import React, { useState } from 'react';
-import { useSettings } from '../../hooks/useSettings';
 import type { ConfigLevel } from '@/shared/types';
 import { SettingsHierarchyTab } from './SettingsHierarchyTab';
-import { EffectiveSettingsTab } from './EffectiveSettingsTab';
 import './SettingsEditor.css';
 
-type TabType = 'user' | 'project' | 'local' | 'managed' | 'effective';
+type TabType = 'user' | 'managed';
 
 export const SettingsEditor: React.FC = () => {
-  const { loading, error, effectiveConfig, refetch } = useSettings();
-  const [activeTab, setActiveTab] = useState<TabType>('effective');
-
-  if (loading) {
-    return (
-      <div className="settings-editor" data-testid="settings-editor">
-        <div className="settings-header">
-          <h1>Settings Editor</h1>
-        </div>
-        <div className="settings-loading">
-          <p>Loading settings...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="settings-editor" data-testid="settings-editor">
-        <div className="settings-header">
-          <h1>Settings Editor</h1>
-        </div>
-        <div className="settings-error">
-          <p className="error-message">Error: {error}</p>
-          <button onClick={refetch} className="btn-retry">
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const [activeTab, setActiveTab] = useState<TabType>('user');
 
   const renderTabContent = () => {
-    switch (activeTab) {
-      case 'effective':
-        return <EffectiveSettingsTab effectiveConfig={effectiveConfig} />;
-      case 'user':
-      case 'project':
-      case 'local':
-      case 'managed':
-        return <SettingsHierarchyTab level={activeTab as ConfigLevel} />;
-      default:
-        return null;
-    }
+    return <SettingsHierarchyTab level={activeTab as ConfigLevel} />;
   };
 
   return (
     <div className="settings-editor" data-testid="settings-editor">
       <div className="settings-header">
-        <h1>Settings Editor</h1>
-        <div className="settings-actions">
+        <div className="header-content">
+          <div>
+            <h1>Settings</h1>
+            <p className="settings-subtitle">
+              Configure your global Claude Code preferences, environment variables, and permissions
+            </p>
+          </div>
           <button
             onClick={() => {
               if (window.electronAPI?.openExternal) {
@@ -69,41 +32,27 @@ export const SettingsEditor: React.FC = () => {
             }}
             className="btn-docs"
           >
-            📖 Settings Documentation
+            📖 Documentation
           </button>
         </div>
       </div>
 
       <div className="settings-tabs">
         <button
-          className={`tab ${activeTab === 'effective' ? 'active' : ''}`}
-          onClick={() => setActiveTab('effective')}
-        >
-          Effective Settings
-        </button>
-        <button
           className={`tab ${activeTab === 'user' ? 'active' : ''}`}
           onClick={() => setActiveTab('user')}
         >
-          User Settings
-        </button>
-        <button
-          className={`tab ${activeTab === 'project' ? 'active' : ''}`}
-          onClick={() => setActiveTab('project')}
-        >
-          Project Settings
-        </button>
-        <button
-          className={`tab ${activeTab === 'local' ? 'active' : ''}`}
-          onClick={() => setActiveTab('local')}
-        >
-          Local Settings
+          <span className="tab-icon">👤</span>
+          <span className="tab-label">User Settings</span>
+          <span className="tab-description">Your global preferences</span>
         </button>
         <button
           className={`tab ${activeTab === 'managed' ? 'active' : ''}`}
           onClick={() => setActiveTab('managed')}
         >
-          Managed Settings
+          <span className="tab-icon">🔒</span>
+          <span className="tab-label">Managed Settings</span>
+          <span className="tab-description">Organization policies (read-only)</span>
         </button>
       </div>
 

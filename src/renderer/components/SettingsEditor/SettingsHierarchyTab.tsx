@@ -17,7 +17,28 @@ export const SettingsHierarchyTab: React.FC<SettingsHierarchyTabProps> = ({ leve
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  // Local state for raw JSON editor
+  const [rawJsonText, setRawJsonText] = useState('');
+  const [rawJsonError, setRawJsonError] = useState<string | null>(null);
+
   const isReadOnly = level === 'managed';
+
+  // Update raw JSON text when settings change or section changes
+  React.useEffect(() => {
+    if (activeSection === 'raw') {
+      setRawJsonText(JSON.stringify(settings, null, 2));
+      setRawJsonError(null);
+    }
+  }, [settings, activeSection]);
+
+  const handleDiscard = () => {
+    discard();
+    // Reset raw JSON text when discarding changes
+    if (activeSection === 'raw') {
+      setRawJsonText(JSON.stringify(settings, null, 2));
+      setRawJsonError(null);
+    }
+  };
 
   const handleSave = async () => {
     setSaveError(null);
@@ -42,7 +63,9 @@ export const SettingsHierarchyTab: React.FC<SettingsHierarchyTabProps> = ({ leve
   if (loading) {
     return (
       <div className="settings-hierarchy-tab">
-        <p>Loading {level} settings...</p>
+        <div className="loading-state">
+          <p>Loading {level} settings...</p>
+        </div>
       </div>
     );
   }
@@ -50,7 +73,28 @@ export const SettingsHierarchyTab: React.FC<SettingsHierarchyTabProps> = ({ leve
   if (error) {
     return (
       <div className="settings-hierarchy-tab">
-        <p className="error-message">Error: {error}</p>
+        <div className="error-state">
+          <p className="error-message">Error: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show helpful message if managed settings don't exist
+  if (level === 'managed' && !Object.keys(settings).length) {
+    return (
+      <div className="settings-hierarchy-tab">
+        <div className="empty-state">
+          <div className="empty-icon">🔒</div>
+          <h3>No Managed Settings</h3>
+          <p>
+            Your organization hasn't configured any managed policies. Managed settings are typically set by IT
+            departments in enterprise environments to enforce security and compliance rules.
+          </p>
+          <p className="empty-hint">
+            If you're part of an organization and expect to see managed settings here, contact your IT administrator.
+          </p>
+        </div>
       </div>
     );
   }
@@ -78,19 +122,41 @@ export const SettingsHierarchyTab: React.FC<SettingsHierarchyTabProps> = ({ leve
       case 'raw':
         return (
           <div className="raw-editor">
+            <div className="raw-editor-controls">
+              <p className="raw-editor-help">
+                Edit the JSON below. Changes are applied automatically when the JSON is valid.
+              </p>
+              {rawJsonError && (
+                <div className="raw-editor-error">
+                  <span className="error-icon">⚠️</span>
+                  <span>{rawJsonError}</span>
+                </div>
+              )}
+              {!rawJsonError && rawJsonText !== JSON.stringify(settings, null, 2) && (
+                <div className="raw-editor-warning">
+                  <span className="warning-icon">✓</span>
+                  <span>Valid JSON - will be applied on save</span>
+                </div>
+              )}
+            </div>
             <textarea
-              value={JSON.stringify(settings, null, 2)}
+              value={rawJsonText}
               onChange={(e) => {
+                const newValue = e.target.value;
+                setRawJsonText(newValue);
+
                 try {
-                  const parsed = JSON.parse(e.target.value);
+                  const parsed = JSON.parse(newValue);
+                  setRawJsonError(null);
                   updateSettings(parsed);
-                } catch {
-                  // Invalid JSON, ignore
+                } catch (err) {
+                  setRawJsonError(err instanceof Error ? err.message : 'Invalid JSON');
                 }
               }}
               readOnly={isReadOnly}
               className="raw-json-editor"
               rows={25}
+              spellCheck={false}
             />
           </div>
         );
@@ -114,7 +180,7 @@ export const SettingsHierarchyTab: React.FC<SettingsHierarchyTabProps> = ({ leve
           <div className="tab-actions">
             {hasChanges && (
               <>
-                <button onClick={discard} className="btn-secondary">
+                <button onClick={handleDiscard} className="btn-secondary">
                   Discard Changes
                 </button>
                 <button onClick={handleSave} className="btn-primary">
