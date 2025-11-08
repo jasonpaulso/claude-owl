@@ -56,6 +56,11 @@ export const IPC_CHANNELS = {
   GET_APP_VERSION: 'system:version',
   GET_CLAUDE_VERSION: 'system:claude-version',
   CHECK_CLAUDE_INSTALLED: 'system:check-claude',
+
+  // CCUsage
+  CHECK_CCUSAGE_INSTALLED: 'ccusage:check-installed',
+  GET_CCUSAGE_VERSION: 'ccusage:get-version',
+  GET_USAGE_REPORT: 'ccusage:get-report',
 } as const;
 
 /**
@@ -270,6 +275,48 @@ export interface CheckClaudeInstalledResponse {
   installed: boolean;
   version?: string;
   path?: string;
+  error?: string;
+}
+
+// CCUsage
+export interface UsageDay {
+  date: string;
+  models: string[];
+  input: number;
+  output: number;
+  cacheCreate: number;
+  cacheRead: number;
+  totalTokens: number;
+  cost: number;
+}
+
+export interface UsageReport {
+  days: UsageDay[];
+  total: {
+    input: number;
+    output: number;
+    cacheCreate: number;
+    cacheRead: number;
+    totalTokens: number;
+    cost: number;
+  };
+}
+
+export interface CheckCCUsageInstalledResponse {
+  success: boolean;
+  installed: boolean;
+  error?: string;
+}
+
+export interface GetCCUsageVersionResponse {
+  success: boolean;
+  version: string | null;
+  error?: string;
+}
+
+export interface GetUsageReportResponse {
+  success: boolean;
+  data?: UsageReport;
   error?: string;
 }
 

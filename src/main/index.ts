@@ -4,6 +4,7 @@ import { registerSystemHandlers } from './ipc/systemHandlers';
 import { registerSkillsHandlers } from './ipc/skillsHandlers';
 import { registerAgentsHandlers } from './ipc/agentsHandlers';
 import { registerSettingsHandlers } from './ipc/settingsHandlers';
+import { registerCCUsageHandlers } from './ipc/ccusageHandlers';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -83,6 +84,7 @@ app.whenReady().then(() => {
   registerSkillsHandlers();
   registerAgentsHandlers();
   registerSettingsHandlers();
+  registerCCUsageHandlers();
 
   createWindow();
 

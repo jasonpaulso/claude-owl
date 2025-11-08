@@ -12,6 +12,14 @@ const SETTINGS_CHANNELS = {
   DELETE_SETTINGS: 'settings:delete',
 } as const;
 
+// Define ccusage channel strings directly to avoid tree-shaking
+const CCUSAGE_CHANNELS = {
+  CHECK_CCUSAGE_INSTALLED: 'ccusage:check-installed',
+  GET_CCUSAGE_VERSION: 'ccusage:get-version',
+  GET_USAGE_REPORT: 'ccusage:get-report',
+  GET_RAW_OUTPUT: 'ccusage:get-raw-output',
+} as const;
+
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -53,6 +61,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getCommand: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.GET_COMMAND, args),
   saveCommand: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.SAVE_COMMAND, args),
   deleteCommand: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.DELETE_COMMAND, args),
+
+  // CCUsage
+  checkCCUsageInstalled: () => ipcRenderer.invoke(CCUSAGE_CHANNELS.CHECK_CCUSAGE_INSTALLED),
+  getCCUsageVersion: () => ipcRenderer.invoke(CCUSAGE_CHANNELS.GET_CCUSAGE_VERSION),
+  getUsageReport: () => ipcRenderer.invoke(CCUSAGE_CHANNELS.GET_USAGE_REPORT),
+  getCCUsageRawOutput: () => ipcRenderer.invoke(CCUSAGE_CHANNELS.GET_RAW_OUTPUT),
 
   // Claude CLI
   executeCLI: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.EXECUTE_CLI, args),
@@ -110,4 +124,7 @@ export interface ElectronAPI {
   listDirectory: (args: unknown) => Promise<unknown>;
   onCLIOutput: (callback: (event: unknown, data: unknown) => void) => () => void;
   onFileChanged: (callback: (event: unknown) => void) => () => void;
+  checkCCUsageInstalled: () => Promise<unknown>;
+  getCCUsageVersion: () => Promise<unknown>;
+  getUsageReport: () => Promise<unknown>;
 }
