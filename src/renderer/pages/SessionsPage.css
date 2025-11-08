@@ -1,0 +1,526 @@
+/* Usage Page Main Container */
+.sessions-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Header */
+.usage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.usage-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+}
+
+.header-subtitle {
+  font-size: 0.95rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.usage-version {
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-family: monospace;
+  margin: 0;
+}
+
+.btn-refresh {
+  padding: 0.75rem 1.5rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-refresh:hover {
+  background: #0056b3;
+}
+
+.btn-retry {
+  padding: 0.75rem 1.5rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+
+.btn-retry:hover {
+  background: #5a6268;
+}
+
+/* Loading and Error States */
+.usage-loading,
+.usage-error,
+.usage-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.usage-error .error-message {
+  color: #dc3545;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.usage-empty {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.usage-empty h3 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+}
+
+.usage-empty p {
+  font-size: 1.05rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Not Installed State */
+.usage-not-installed {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.not-installed-icon {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.usage-not-installed h2 {
+  font-size: 1.75rem;
+  color: #1a1a1a;
+  margin: 0 0 1rem 0;
+}
+
+.usage-not-installed > p {
+  font-size: 1.05rem;
+  color: #6c757d;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.usage-not-installed code {
+  background: #f8f9fa;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-family: 'Monaco', monospace;
+  color: #495057;
+  font-size: 0.95rem;
+}
+
+.installation-steps {
+  text-align: left;
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.installation-steps h3 {
+  font-size: 1.25rem;
+  color: #495057;
+  margin: 0 0 1.5rem 0;
+}
+
+.installation-steps ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.installation-steps li {
+  margin-bottom: 1.5rem;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.installation-steps li:last-child {
+  margin-bottom: 0;
+}
+
+.code-block {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 0.95rem;
+  margin: 0.75rem 0;
+  overflow-x: auto;
+}
+
+.installation-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-github {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #24292e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-github:hover {
+  background: #1a1e22;
+}
+
+/* Summary Cards */
+.usage-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.summary-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.summary-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.summary-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.summary-content {
+  flex: 1;
+}
+
+.summary-content h3 {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.25rem;
+}
+
+.summary-subtitle {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Usage Sections */
+.usage-section {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.usage-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Cost Chart */
+.cost-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  height: 300px;
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+.chart-bar-container {
+  flex: 1;
+  min-width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.chart-bar {
+  width: 100%;
+  min-height: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  transition: all 0.3s;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+.chart-bar:hover {
+  filter: brightness(1.1);
+  transform: scaleY(1.02);
+}
+
+.chart-bar-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.chart-bar-date {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+  writing-mode: horizontal-tb;
+  text-align: center;
+}
+
+/* Token Breakdown */
+.token-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.breakdown-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.breakdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.breakdown-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+}
+
+.breakdown-value {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 1.1rem;
+}
+
+.breakdown-bar-bg {
+  height: 32px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.breakdown-bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.breakdown-percentage {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* Usage Table */
+.usage-table-container {
+  overflow-x: auto;
+}
+
+.usage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.usage-table thead {
+  background: #f8f9fa;
+  position: sticky;
+  top: 0;
+}
+
+.usage-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+.usage-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  color: #495057;
+}
+
+.usage-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.usage-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.date-cell {
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.models-cell {
+  min-width: 150px;
+}
+
+.models-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.model-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.no-models {
+  color: #adb5bd;
+}
+
+.number-cell {
+  text-align: right;
+  font-family: 'Monaco', monospace;
+  font-size: 0.85rem;
+}
+
+.total-cell {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.cost-cell {
+  text-align: right;
+  font-weight: 600;
+  color: #28a745;
+  font-family: 'Monaco', monospace;
+}
+
+/* Raw Output Display */
+.usage-raw-output {
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin-top: 1.5rem;
+  border: 1px solid #333;
+}
+
+.usage-raw-output pre {
+  margin: 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #d4d4d4;
+  white-space: pre;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sessions-page {
+    padding: 1rem;
+  }
+
+  .usage-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .usage-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .cost-chart {
+    height: 250px;
+  }
+
+  .usage-table {
+    font-size: 0.8rem;
+  }
+
+  .usage-table th,
+  .usage-table td {
+    padding: 0.5rem;
+  }
+
+  .usage-raw-output {
+    font-size: 11px;
+  }
+}
