@@ -4,6 +4,7 @@ import './SessionsPage.css';
 export const SessionsPage: React.FC = () => {
   const [installed, setInstalled] = useState(false);
   const [version, setVersion] = useState<string | null>(null);
+  const [rawOutput, setRawOutput] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,16 +30,17 @@ export const SessionsPage: React.FC = () => {
         setVersion(versionResp.version);
       }
 
-      // Get raw output (if available)
-      // TODO: Implement getCCUsageRawOutput in preload
-      // if (window.electronAPI.getCCUsageRawOutput) {
-      //   const outputResp = await window.electronAPI.getCCUsageRawOutput() as { success: boolean; data?: string; error?: string };
-      //   if (outputResp.success && outputResp.data) {
-      //     setRawOutput(outputResp.data);
-      //   } else {
-      //     setError(outputResp.error || 'Failed to load usage data');
-      //   }
-      // }
+      // Get raw output
+      if (window.electronAPI.getCCUsageRawOutput) {
+        const outputResp = await window.electronAPI.getCCUsageRawOutput() as { success: boolean; data?: string; error?: string };
+        if (outputResp.success && outputResp.data) {
+          setRawOutput(outputResp.data);
+        } else {
+          setError(outputResp.error || 'Failed to load usage data');
+        }
+      } else {
+        setError('getCCUsageRawOutput not available');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load usage data');
     } finally {
@@ -142,11 +144,17 @@ export const SessionsPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="usage-empty">
-        <div className="empty-icon">📈</div>
-        <h3>Sessions View Coming Soon</h3>
-        <p>This page will show Claude Code session history and token usage statistics.</p>
-      </div>
+      {rawOutput ? (
+        <div className="usage-output">
+          <pre className="output-content">{rawOutput}</pre>
+        </div>
+      ) : (
+        <div className="usage-empty">
+          <div className="empty-icon">📈</div>
+          <h3>No Usage Data</h3>
+          <p>Run ccusage in your terminal to generate usage statistics, then refresh this page.</p>
+        </div>
+      )}
     </div>
   );
 };

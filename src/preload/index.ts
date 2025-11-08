@@ -199,6 +199,7 @@ export interface ElectronAPI {
   checkCCUsageInstalled: () => Promise<unknown>;
   getCCUsageVersion: () => Promise<unknown>;
   getUsageReport: () => Promise<unknown>;
+  getCCUsageRawOutput: () => Promise<unknown>;
   getServiceStatus: () => Promise<unknown>;
   getAllHooks: (args: unknown) => Promise<unknown>;
   getHookTemplates: () => Promise<unknown>;
@@ -208,5 +209,4 @@ export interface ElectronAPI {
   getDebugLog: (args: unknown) => Promise<unknown>;
   deleteDebugLog: (args: unknown) => Promise<unknown>;
   searchDebugLogs: (args: unknown) => Promise<unknown>;
-  getCCUsageRawOutput?: () => Promise<unknown>;
 }

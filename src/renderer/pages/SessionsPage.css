@@ -473,6 +473,30 @@
   font-family: 'Monaco', monospace;
 }
 
+/* Usage Output Display */
+.usage-output {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.output-content {
+  margin: 0;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #495057;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre;
+  word-wrap: normal;
+  min-width: 0;
+}
+
 /* Raw Output Display */
 .usage-raw-output {
   background: #1e1e1e;
