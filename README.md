@@ -7,33 +7,34 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Beta](https://img.shields.io/badge/status-Beta-blue.svg)](#status)
 
-**Status:** 🚀 Beta - Actively developed and tested on macOS
+**Status:** 🚀 Beta - Actively developed and tested on macOS (Windows support coming soon)
 
 ---
 
 ## What is Claude Owl?
 
-Claude Owl is a comprehensive desktop application that makes [Claude Code](https://code.claude.com) more accessible and powerful through an intuitive visual interface. Instead of manually editing JSON and YAML configuration files, Claude Owl provides:
+Claude Owl is a desktop application for managing [Claude Code](https://code.claude.com) configurations through an intuitive visual interface. Instead of manually editing JSON and YAML configuration files in your text editor, Claude Owl provides:
 
-- **Visual Configuration Management** - Edit settings, agents, skills, and more through beautiful UIs
-- **Plugin Marketplace Integration** - Discover and install plugins with one click
-- **Real-time Session Monitoring** - Watch Claude Code sessions with live logs and metrics
-- **Headless Test Runner** - Execute and manage automated tests with CI/CD integration
-- **Debugging Tools** - Analyze errors, view logs, and optimize configurations
-- **Local-First** - All data stays on your machine, privacy-focused design
+- **Visual Settings Editor** - Configure environment variables, permissions, and core settings
+- **Subagents Manager** - Create, edit, and manage custom agents with system prompts and tool access
+- **Skills & Plugins Manager** - Browse and manage your agent skills and plugins
+- **Debug Logs Viewer** - View detailed logs from Claude Code operations
+- **Hooks Manager** - View and validate your configured hooks with security insights
+- **Local-First** - All configurations stay on your machine with no external data collection
 
 ## Current Features (Beta)
 
-Claude Owl is actively being developed. Currently available features include:
+Currently available and functional:
 
-- **Dashboard** - Overview of your Claude Code installation
-- **Subagents Manager** - Create, edit, and manage custom subagents
-- **Skills Manager** - Browse and manage your agent skills
-- **Sessions Monitor** - View and analyze Claude Code sessions
+- **Dashboard** - Check your Claude Code installation status at a glance
+- **Settings Editor** - Visual configuration of environment variables, permissions rules, and core settings
+- **Subagents Manager** - Create, edit, and delete custom agents with system prompts and tool restrictions
+- **Skills Manager** - Browse and manage available agent skills
+- **Plugins Manager** - Browse and manage installed plugins
 - **Debug Logs** - View detailed debug logs from Claude Code operations
-- **Settings & Configuration** - Visual interface for managing Claude Code settings
+- **Hooks Manager** - View, validate, and test hooks with security insights
 
-See [SCREENSHOTS.md](SCREENSHOTS.md) for feature screenshots and [docs/features.md](docs/features.md) for the complete planned feature list.
+See [SCREENSHOTS.md](SCREENSHOTS.md) for feature screenshots.
 
 ![Claude Owl Dashboard](screenshots/dashboard.png)
 
@@ -71,20 +72,12 @@ npm run package
 
 Pre-built binaries for macOS are coming soon.
 
-## Quick Start
-
-1. Clone and install Claude Owl following the instructions above
-2. Run `npm run dev:electron` to start the development server
-3. Claude Owl will automatically detect your Claude Code installation
-4. Start managing your configuration visually!
-
 ## Documentation
 
 - [Architecture Overview](docs/architecture.md) - System design and technical details
-- [Development Roadmap](docs/roadmap.md) - Feature timeline and tasks
-- [Complete Feature List](docs/features.md) - All planned features
 - [Contributing Guide](CONTRIBUTING.md) - How to contribute
 - [Code of Conduct](CODE_OF_CONDUCT.md) - Community guidelines
+- [Development Notes](CLAUDE.md) - Development commands and project structure
 
 ## Development
 
@@ -109,36 +102,17 @@ claude-owl/
 - **Build Tool**: Vite
 - **State Management**: Zustand
 - **Styling**: Tailwind CSS + shadcn/ui
-- **Code Editor**: Monaco Editor
-- **Terminal**: xterm.js
-- **Testing**: Vitest + Playwright + React Testing Library
+- **Testing**: Vitest + React Testing Library
 
 ### Development Scripts
 
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run lint         # Lint code
-npm run format       # Format code
-npm test             # Run all tests
-npm run test:unit    # Run unit tests
-npm run test:e2e     # Run E2E tests
-```
+See [CLAUDE.md](CLAUDE.md) for the complete list of development commands.
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-### Ways to Contribute
-
-- 🐛 **Report bugs** - Open an issue with details
-- 💡 **Suggest features** - Share your ideas
-- 📝 **Improve documentation** - Help others understand
-- 🧑‍💻 **Submit code** - Fix bugs or add features
-- 🎨 **Design** - Improve UI/UX
-- 🧪 **Test** - Help with testing and QA
-
-### Development Setup
+To get started:
 
 ```bash
 # Fork and clone the repository
@@ -149,33 +123,26 @@ cd claude-owl
 npm install
 
 # Start development server
-npm run dev
+npm run dev:electron
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+## Development Status
 
-## Roadmap
+Currently in **Beta** with core features available on macOS.
 
-Currently in **Beta** with focus on core feature stability. See the [complete roadmap](docs/roadmap.md) for detailed planning.
-
-**Recent releases:**
-- ✅ Phase 0: Foundation & Project Setup
-- ✅ Claude Code detection and integration
-- ✅ Subagents manager
-- ✅ Skills manager
+**Completed:**
+- ✅ Foundation and project setup
+- ✅ Claude Code detection
+- ✅ Subagents manager (create, edit, delete)
+- ✅ Skills and plugins manager
+- ✅ Settings editor with permissions rules
 - ✅ Debug logs viewer
-- ✅ Sessions monitor
+- ✅ Hooks manager (read-only with templates and validation)
 
-**In progress:**
-- Settings editor and validation
-- Enhanced configuration management
-- Windows/Linux support
-
-**Planned:**
-- Plugins marketplace integration
+**Next:**
 - Commands manager
-- Hooks manager with security
-- MCP servers management
+- MCP servers manager
+- Windows/Linux support
 
 ## Architecture
 
@@ -220,7 +187,7 @@ Yes! Project-level configurations (`.claude/`) can be committed to git and share
 
 ### What platforms are currently supported?
 
-- **macOS** (Intel & Apple Silicon) - ✅ Fully tested
+- **macOS** (Intel & Apple Silicon) - ✅ 
 - **Windows** - In development
 - **Linux** - In development
 
