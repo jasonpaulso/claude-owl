@@ -84,7 +84,7 @@ jobs:
         run: npm run test:unit
 
       - name: Generate coverage report
-        run: npm run test:coverage || true
+        run: npm run test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -93,15 +93,6 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: false
-
-      - name: Publish test results
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: Unit Test Results
-          path: 'coverage/junit.xml'
-          reporter: 'jest-junit'
-          fail-on-error: true
 
   # Job 4: Build check
   build:
