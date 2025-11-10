@@ -55,7 +55,8 @@ release/
 .cache/
 
 # Package manager
-package-lock.json
+# Lock files should be committed to version control
+# package-lock.json  # Uncomment if not using npm
 yarn.lock
 pnpm-lock.yaml
 
