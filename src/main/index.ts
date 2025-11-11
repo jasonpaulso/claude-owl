@@ -4,6 +4,7 @@ import fs from 'fs';
 import { registerSystemHandlers } from './ipc/systemHandlers';
 import { registerSkillsHandlers } from './ipc/skillsHandlers';
 import { registerAgentsHandlers } from './ipc/agentsHandlers';
+import { registerCommandsHandlers } from './ipc/commandsHandlers';
 import { registerSettingsHandlers } from './ipc/settingsHandlers';
 import { registerCCUsageHandlers } from './ipc/ccusageHandlers';
 import { registerPluginsHandlers } from './ipc/pluginsHandlers';
@@ -105,7 +106,10 @@ app.whenReady().then(() => {
       try {
         app.dock.setIcon(iconPath);
       } catch (error) {
-        console.warn('Failed to set dock icon:', error instanceof Error ? error.message : String(error));
+        console.warn(
+          'Failed to set dock icon:',
+          error instanceof Error ? error.message : String(error)
+        );
       }
     }
   }
@@ -114,6 +118,7 @@ app.whenReady().then(() => {
   registerSystemHandlers();
   registerSkillsHandlers();
   registerAgentsHandlers();
+  registerCommandsHandlers();
   registerSettingsHandlers();
   registerCCUsageHandlers();
   registerPluginsHandlers();

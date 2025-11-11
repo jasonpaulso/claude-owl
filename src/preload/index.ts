@@ -64,6 +64,16 @@ const LOGS_CHANNELS = {
   SEARCH_DEBUG_LOGS: 'logs:search',
 } as const;
 
+// Define commands channel strings directly to avoid tree-shaking
+const COMMANDS_CHANNELS = {
+  LIST_COMMANDS: 'commands:list',
+  GET_COMMAND: 'commands:get',
+  CREATE_COMMAND: 'commands:create',
+  UPDATE_COMMAND: 'commands:update',
+  DELETE_COMMAND: 'commands:delete',
+  MOVE_COMMAND: 'commands:move',
+} as const;
+
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -76,10 +86,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Settings
   getSettings: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.GET_SETTINGS, args),
   saveSettings: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.SAVE_SETTINGS, args),
-  validateSettings: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.VALIDATE_SETTINGS, args),
+  validateSettings: (args: unknown) =>
+    ipcRenderer.invoke(SETTINGS_CHANNELS.VALIDATE_SETTINGS, args),
   getEffectiveSettings: () => ipcRenderer.invoke(SETTINGS_CHANNELS.GET_EFFECTIVE_SETTINGS),
-  settingsFileExists: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.SETTINGS_FILE_EXISTS, args),
-  ensureSettingsFile: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.ENSURE_SETTINGS_FILE, args),
+  settingsFileExists: (args: unknown) =>
+    ipcRenderer.invoke(SETTINGS_CHANNELS.SETTINGS_FILE_EXISTS, args),
+  ensureSettingsFile: (args: unknown) =>
+    ipcRenderer.invoke(SETTINGS_CHANNELS.ENSURE_SETTINGS_FILE, args),
   deleteSettings: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.DELETE_SETTINGS, args),
   createBackup: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.CREATE_BACKUP, args),
   restoreBackup: (args: unknown) => ipcRenderer.invoke(SETTINGS_CHANNELS.RESTORE_BACKUP, args),
@@ -112,21 +125,25 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteSkill: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.DELETE_SKILL, args),
 
   // Commands
-  listCommands: () => ipcRenderer.invoke(IPC_CHANNELS.LIST_COMMANDS),
-  getCommand: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.GET_COMMAND, args),
-  saveCommand: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.SAVE_COMMAND, args),
-  deleteCommand: (args: unknown) => ipcRenderer.invoke(IPC_CHANNELS.DELETE_COMMAND, args),
+  listCommands: (args?: unknown) => ipcRenderer.invoke(COMMANDS_CHANNELS.LIST_COMMANDS, args),
+  getCommand: (args: unknown) => ipcRenderer.invoke(COMMANDS_CHANNELS.GET_COMMAND, args),
+  createCommand: (args: unknown) => ipcRenderer.invoke(COMMANDS_CHANNELS.CREATE_COMMAND, args),
+  updateCommand: (args: unknown) => ipcRenderer.invoke(COMMANDS_CHANNELS.UPDATE_COMMAND, args),
+  deleteCommand: (args: unknown) => ipcRenderer.invoke(COMMANDS_CHANNELS.DELETE_COMMAND, args),
+  moveCommand: (args: unknown) => ipcRenderer.invoke(COMMANDS_CHANNELS.MOVE_COMMAND, args),
 
   // Plugins
   getMarketplaces: () => ipcRenderer.invoke(PLUGINS_CHANNELS.GET_MARKETPLACES),
   addMarketplace: (args: unknown) => ipcRenderer.invoke(PLUGINS_CHANNELS.ADD_MARKETPLACE, args),
-  removeMarketplace: (args: unknown) => ipcRenderer.invoke(PLUGINS_CHANNELS.REMOVE_MARKETPLACE, args),
+  removeMarketplace: (args: unknown) =>
+    ipcRenderer.invoke(PLUGINS_CHANNELS.REMOVE_MARKETPLACE, args),
   getAvailablePlugins: () => ipcRenderer.invoke(PLUGINS_CHANNELS.GET_AVAILABLE_PLUGINS),
   getInstalledPlugins: () => ipcRenderer.invoke(PLUGINS_CHANNELS.GET_INSTALLED_PLUGINS),
   installPlugin: (args: unknown) => ipcRenderer.invoke(PLUGINS_CHANNELS.INSTALL_PLUGIN, args),
   uninstallPlugin: (args: unknown) => ipcRenderer.invoke(PLUGINS_CHANNELS.UNINSTALL_PLUGIN, args),
   togglePlugin: (args: unknown) => ipcRenderer.invoke(PLUGINS_CHANNELS.TOGGLE_PLUGIN, args),
-  getGitHubRepoInfo: (args: unknown) => ipcRenderer.invoke(PLUGINS_CHANNELS.GET_GITHUB_REPO_INFO, args),
+  getGitHubRepoInfo: (args: unknown) =>
+    ipcRenderer.invoke(PLUGINS_CHANNELS.GET_GITHUB_REPO_INFO, args),
   getPluginHealth: (args: unknown) => ipcRenderer.invoke(PLUGINS_CHANNELS.GET_PLUGIN_HEALTH, args),
 
   // CCUsage
@@ -138,8 +155,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Hooks
   getAllHooks: (args: unknown) => ipcRenderer.invoke(HOOKS_CHANNELS.GET_ALL_HOOKS, args),
   getHookTemplates: () => ipcRenderer.invoke(HOOKS_CHANNELS.GET_TEMPLATES),
-  getHookSettingsPath: (args: unknown) => ipcRenderer.invoke(HOOKS_CHANNELS.GET_SETTINGS_PATH, args),
-  openHookSettingsFile: (args: unknown) => ipcRenderer.invoke(HOOKS_CHANNELS.OPEN_SETTINGS_FILE, args),
+  getHookSettingsPath: (args: unknown) =>
+    ipcRenderer.invoke(HOOKS_CHANNELS.GET_SETTINGS_PATH, args),
+  openHookSettingsFile: (args: unknown) =>
+    ipcRenderer.invoke(HOOKS_CHANNELS.OPEN_SETTINGS_FILE, args),
 
   // Service Status
   getServiceStatus: () => ipcRenderer.invoke(STATUS_CHANNELS.GET_SERVICE_STATUS),
@@ -204,10 +223,12 @@ export interface ElectronAPI {
   getSkill: (args: unknown) => Promise<unknown>;
   saveSkill: (args: unknown) => Promise<unknown>;
   deleteSkill: (args: unknown) => Promise<unknown>;
-  listCommands: () => Promise<unknown>;
+  listCommands: (args?: unknown) => Promise<unknown>;
   getCommand: (args: unknown) => Promise<unknown>;
-  saveCommand: (args: unknown) => Promise<unknown>;
+  createCommand: (args: unknown) => Promise<unknown>;
+  updateCommand: (args: unknown) => Promise<unknown>;
   deleteCommand: (args: unknown) => Promise<unknown>;
+  moveCommand: (args: unknown) => Promise<unknown>;
   getMarketplaces: () => Promise<unknown>;
   addMarketplace: (args: unknown) => Promise<unknown>;
   removeMarketplace: (args: unknown) => Promise<unknown>;

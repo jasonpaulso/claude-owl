@@ -77,12 +77,15 @@ export const LogViewer: React.FC<LogViewerProps> = ({ log, onClose, onDelete }) 
     const matches = log.content.match(regex);
     setSearchMatches(matches?.length || 0);
 
-    return log.content.split(regex).map((part, i) => {
-      if (part && regex.test(part)) {
-        return `<mark key=${i}>${part}</mark>`;
-      }
-      return part;
-    }).join('');
+    return log.content
+      .split(regex)
+      .map((part, i) => {
+        if (part && regex.test(part)) {
+          return `<mark key=${i}>${part}</mark>`;
+        }
+        return part;
+      })
+      .join('');
   }, [searchQuery, log.content]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,11 +99,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ log, onClose, onDelete }) 
       <div className="log-viewer-header">
         <div className="log-viewer-title-section">
           <h2 className="log-viewer-title">{log.filename}</h2>
-          <button
-            className="log-viewer-close-btn"
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <button className="log-viewer-close-btn" onClick={onClose} aria-label="Close">
             ✕
           </button>
         </div>
@@ -129,7 +128,9 @@ export const LogViewer: React.FC<LogViewerProps> = ({ log, onClose, onDelete }) 
           />
           {searchQuery && (
             <span className="log-search-count">
-              {searchMatches > 0 ? `${searchMatches} match${searchMatches !== 1 ? 'es' : ''}` : 'No matches'}
+              {searchMatches > 0
+                ? `${searchMatches} match${searchMatches !== 1 ? 'es' : ''}`
+                : 'No matches'}
             </span>
           )}
           <button
@@ -150,23 +151,16 @@ export const LogViewer: React.FC<LogViewerProps> = ({ log, onClose, onDelete }) 
           ref={contentRef}
           className="log-content"
           dangerouslySetInnerHTML={{
-            __html: highlightContent || ''
+            __html: highlightContent || '',
           }}
         />
       </div>
 
       <div className="log-viewer-actions">
-        <button
-          className="btn btn-secondary"
-          onClick={onClose}
-        >
+        <button className="btn btn-secondary" onClick={onClose}>
           Close
         </button>
-        <button
-          className="btn btn-danger"
-          onClick={handleDelete}
-          disabled={isDeleting}
-        >
+        <button className="btn btn-danger" onClick={handleDelete} disabled={isDeleting}>
           {isDeleting ? 'Deleting...' : 'Delete Log'}
         </button>
       </div>
