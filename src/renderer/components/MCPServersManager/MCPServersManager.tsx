@@ -4,6 +4,7 @@ import type { MCPServer, AddMCPServerRequest } from '@/shared/types';
 import { PageHeader } from '../common/PageHeader';
 import { ServerCard } from './ServerCard';
 import { AddServerForm } from './AddServerForm';
+import { ConnectionTester } from './ConnectionTester';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import './MCPServersManager.css';
 
@@ -14,7 +15,7 @@ export const MCPServersManager: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedServer, setSelectedServer] = useState<MCPServer | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<MCPServer | null>(null);
-  const [testingServer, setTestingServer] = useState<string | null>(null);
+  const [showTester, setShowTester] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [scopeFilter, setScopeFilter] = useState<'all' | 'user' | 'project' | 'local'>('all');
 
@@ -34,21 +35,8 @@ export const MCPServersManager: React.FC = () => {
   /**
    * Handle testing server connection
    */
-  const handleTestConnection = async (serverName: string) => {
-    try {
-      setTestingServer(serverName);
-      const result = await testConnection(serverName);
-
-      // Show result - could update server status here
-      console.log('Test result:', result);
-
-      // Refresh servers to update status
-      await listServers();
-    } catch (err) {
-      console.error('Test failed:', err);
-    } finally {
-      setTestingServer(null);
-    }
+  const handleTestConnection = (serverName: string) => {
+    setShowTester(serverName);
   };
 
   /**
@@ -191,7 +179,7 @@ export const MCPServersManager: React.FC = () => {
               <ServerCard
                 key={`${server.scope}-${server.name}`}
                 server={server}
-                isTesting={testingServer === server.name}
+                isTesting={showTester === server.name}
                 onTest={() => handleTestConnection(server.name)}
                 onDelete={() => handleDeleteServer(server)}
                 onClick={() => setSelectedServer(server)}
@@ -222,6 +210,15 @@ export const MCPServersManager: React.FC = () => {
           onCancel={() => setDeleteConfirm(null)}
           confirmText="Delete"
           confirmVariant="danger"
+        />
+      )}
+
+      {/* Connection Tester */}
+      {showTester && (
+        <ConnectionTester
+          serverName={showTester}
+          onTest={testConnection}
+          onClose={() => setShowTester(null)}
         />
       )}
 
