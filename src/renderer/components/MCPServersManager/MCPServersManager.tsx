@@ -1,0 +1,234 @@
+import React, { useState } from 'react';
+import { useMCP } from '../../hooks/useMCP';
+import type { MCPServer, AddMCPServerRequest } from '@/shared/types';
+import { PageHeader } from '../common/PageHeader';
+import { ServerCard } from './ServerCard';
+import { AddServerForm } from './AddServerForm';
+import { ConfirmDialog } from '../common/ConfirmDialog';
+import './MCPServersManager.css';
+
+export const MCPServersManager: React.FC = () => {
+  const { servers, loading, error, addServer, removeServer, testConnection, listServers } =
+    useMCP();
+
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedServer, setSelectedServer] = useState<MCPServer | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<MCPServer | null>(null);
+  const [testingServer, setTestingServer] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [scopeFilter, setScopeFilter] = useState<'all' | 'user' | 'project' | 'local'>('all');
+
+  /**
+   * Handle adding a new server
+   */
+  const handleAddServer = async (config: AddMCPServerRequest) => {
+    try {
+      await addServer(config);
+      setShowAddForm(false);
+    } catch (err) {
+      console.error('Failed to add server:', err);
+      // Error is handled by the hook
+    }
+  };
+
+  /**
+   * Handle testing server connection
+   */
+  const handleTestConnection = async (serverName: string) => {
+    try {
+      setTestingServer(serverName);
+      const result = await testConnection(serverName);
+
+      // Show result - could update server status here
+      console.log('Test result:', result);
+
+      // Refresh servers to update status
+      await listServers();
+    } catch (err) {
+      console.error('Test failed:', err);
+    } finally {
+      setTestingServer(null);
+    }
+  };
+
+  /**
+   * Handle deleting a server
+   */
+  const handleDeleteServer = (server: MCPServer) => {
+    // Can't delete plugin servers
+    if (server.scope === 'plugin' || server.scope === 'mcp') {
+      return;
+    }
+    setDeleteConfirm(server);
+  };
+
+  /**
+   * Confirm delete action
+   */
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirm) return;
+
+    try {
+      await removeServer({
+        name: deleteConfirm.name,
+        scope: deleteConfirm.scope as 'user' | 'project' | 'local',
+      });
+      setSelectedServer(null);
+    } catch (err) {
+      console.error('Failed to delete server:', err);
+    } finally {
+      setDeleteConfirm(null);
+    }
+  };
+
+  /**
+   * Filter servers based on search and scope
+   */
+  const filteredServers = servers.filter((server) => {
+    const matchesSearch =
+      !searchQuery ||
+      server.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (server.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+
+    const matchesScope = scopeFilter === 'all' || server.scope === scopeFilter;
+
+    return matchesSearch && matchesScope;
+  });
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="mcp-servers-manager" data-testid="mcp-servers-manager">
+        <PageHeader
+          title="MCP Servers"
+          description="Manage Model Context Protocol server integrations"
+        />
+        <div className="mcp-loading">
+          <p>Loading MCP servers...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error && servers.length === 0) {
+    return (
+      <div className="mcp-servers-manager" data-testid="mcp-servers-manager">
+        <PageHeader
+          title="MCP Servers"
+          description="Manage Model Context Protocol server integrations"
+          actions={[
+            {
+              label: 'Retry',
+              onClick: listServers,
+              variant: 'secondary',
+            },
+          ]}
+        />
+        <div className="mcp-error">
+          <p className="error-message">Error: {error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mcp-servers-manager" data-testid="mcp-servers-manager">
+      <PageHeader
+        title="MCP Servers"
+        description="Manage Model Context Protocol server integrations"
+        actions={[
+          {
+            label: '+ Add Server',
+            onClick: () => setShowAddForm(true),
+            variant: 'primary',
+          },
+        ]}
+      />
+
+      {/* Search and Filter */}
+      <div className="mcp-controls">
+        <div className="mcp-search">
+          <input
+            type="text"
+            placeholder="Search servers by name or description..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="mcp-search-input"
+          />
+        </div>
+
+        <div className="mcp-filters">
+          <select
+            value={scopeFilter}
+            onChange={(e) => setScopeFilter(e.target.value as typeof scopeFilter)}
+            className="mcp-filter-select"
+          >
+            <option value="all">All Scopes</option>
+            <option value="user">User Level</option>
+            <option value="project">Project Level</option>
+            <option value="local">Local</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Servers List */}
+      <div className="mcp-content">
+        {filteredServers.length === 0 ? (
+          <div className="mcp-empty">
+            <p>
+              {searchQuery || scopeFilter !== 'all'
+                ? 'No servers match your filters'
+                : 'No MCP servers configured yet'}
+            </p>
+            <button onClick={() => setShowAddForm(true)} className="btn-add-empty">
+              Add Your First Server
+            </button>
+          </div>
+        ) : (
+          <div className="mcp-servers-grid">
+            {filteredServers.map((server) => (
+              <ServerCard
+                key={`${server.scope}-${server.name}`}
+                server={server}
+                isTesting={testingServer === server.name}
+                onTest={() => handleTestConnection(server.name)}
+                onDelete={() => handleDeleteServer(server)}
+                onClick={() => setSelectedServer(server)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Add Server Modal */}
+      {showAddForm && (
+        <div className="mcp-modal-overlay" onClick={() => setShowAddForm(false)}>
+          <div className="mcp-modal-content" onClick={(e) => e.stopPropagation()}>
+            <AddServerForm
+              onSubmit={handleAddServer}
+              onCancel={() => setShowAddForm(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation */}
+      {deleteConfirm && (
+        <ConfirmDialog
+          title="Delete MCP Server"
+          message={`Are you sure you want to delete the server "${deleteConfirm.name}"?`}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setDeleteConfirm(null)}
+          confirmText="Delete"
+          confirmVariant="danger"
+        />
+      )}
+
+      {/* Show error toast if needed */}
+      {error && servers.length > 0 && (
+        <div className="mcp-error-toast">{error}</div>
+      )}
+    </div>
+  );
+};
