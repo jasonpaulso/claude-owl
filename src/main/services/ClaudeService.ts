@@ -150,9 +150,31 @@ export class ClaudeService {
     console.log('[ClaudeService] Listing MCP servers, scope:', scope || 'all');
 
     try {
-      // Use JSON format for easier parsing
+      // Try with --format json first
       const scopeArg = scope ? ` --scope ${scope}` : '';
-      const command = `claude mcp list --format json${scopeArg}`;
+      let command = `claude mcp list --format json${scopeArg}`;
+      console.log('[ClaudeService] Executing command:', command);
+
+      try {
+        const { stdout, stderr } = await execAsync(command);
+
+        // Try to parse as JSON
+        if (stdout && stdout.trim()) {
+          try {
+            const servers = JSON.parse(stdout) as MCPServer[];
+            console.log('[ClaudeService] Found MCP servers (JSON):', servers.length);
+            return servers;
+          } catch (jsonError) {
+            console.log('[ClaudeService] JSON parse failed, trying text format');
+            // Fall through to text parsing
+          }
+        }
+      } catch (jsonCmdError) {
+        console.log('[ClaudeService] --format json not supported, trying without');
+      }
+
+      // Fall back to plain text format
+      command = `claude mcp list${scopeArg}`;
       console.log('[ClaudeService] Executing command:', command);
 
       const { stdout, stderr } = await execAsync(command);
@@ -162,16 +184,10 @@ export class ClaudeService {
         return [];
       }
 
-      // Parse JSON output
-      try {
-        const servers = JSON.parse(stdout) as MCPServer[];
-        console.log('[ClaudeService] Found MCP servers:', servers.length);
-        return servers;
-      } catch (parseError) {
-        console.error('[ClaudeService] Failed to parse MCP list output:', parseError);
-        // Fall back to parsing text output if JSON parsing fails
-        return this.parseTextServerList(stdout);
-      }
+      // Parse text output
+      const servers = this.parseTextServerList(stdout);
+      console.log('[ClaudeService] Found MCP servers (text):', servers.length);
+      return servers;
     } catch (error) {
       console.error('[ClaudeService] Failed to list MCP servers:', error);
       return [];
@@ -278,29 +294,75 @@ export class ClaudeService {
 
   /**
    * Parse text output from `claude mcp list` as fallback
-   * This is a simple parser for cases where JSON format isn't available
+   * This parser handles the actual output format from claude mcp list
    */
   private parseTextServerList(output: string): MCPServer[] {
     console.log('[ClaudeService] Parsing text server list (fallback)');
+    console.log('[ClaudeService] Raw output:', output);
 
     const servers: MCPServer[] = [];
     const lines = output.split('\n').filter(line => line.trim());
 
-    // Simple parsing: assume each server is on a separate line
-    // Format might be: "server-name (stdio)" or similar
     for (const line of lines) {
-      const match = line.match(/^(\S+)\s+\((\w+)\)/);
+      // Skip header lines like "Checking MCP server health..."
+      if (line.includes('Checking') || line.includes('health') || line.trim().length === 0) {
+        continue;
+      }
+
+      // Parse format: "server-name: command args - ✓ Connected"
+      // or: "server-name: command args - ✗ Error message"
+      const match = line.match(/^([^:]+):\s+(.+?)\s+-\s+(.+)$/);
       if (match) {
-        const [, name, transport] = match;
-        if (transport === 'stdio' || transport === 'http' || transport === 'sse') {
-          servers.push({
-            name,
-            transport: transport as 'stdio' | 'http' | 'sse',
-          });
+        const [, name, commandPart, statusPart] = match;
+        const serverName = name.trim();
+        const commandStr = commandPart.trim();
+
+        // Determine transport type
+        let transport: 'stdio' | 'http' | 'sse' = 'stdio';
+        let command: string | undefined;
+        let args: string[] | undefined;
+        let url: string | undefined;
+
+        // Check if it's a URL (HTTP/SSE)
+        if (commandStr.startsWith('http://') || commandStr.startsWith('https://')) {
+          transport = 'http'; // Could be SSE too, but we'll default to http
+          url = commandStr;
+        } else {
+          // It's stdio - parse command and args
+          transport = 'stdio';
+          const parts = commandStr.split(/\s+/);
+          if (parts.length > 0) {
+            command = parts[0];
+            if (parts.length > 1) {
+              args = parts.slice(1);
+            }
+          }
         }
+
+        // Determine status
+        let status: 'connected' | 'error' | 'unknown' = 'unknown';
+        if (statusPart.includes('✓') || statusPart.toLowerCase().includes('connected')) {
+          status = 'connected';
+        } else if (statusPart.includes('✗') || statusPart.toLowerCase().includes('error')) {
+          status = 'error';
+        }
+
+        const server: MCPServer = {
+          name: serverName,
+          transport,
+          status,
+        };
+
+        if (command) server.command = command;
+        if (args) server.args = args;
+        if (url) server.url = url;
+
+        servers.push(server);
+        console.log('[ClaudeService] Parsed server:', server);
       }
     }
 
+    console.log('[ClaudeService] Parsed', servers.length, 'servers from text output');
     return servers;
   }
 }
