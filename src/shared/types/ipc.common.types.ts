@@ -85,6 +85,12 @@ export const IPC_CHANNELS = {
   GET_SETTINGS_PATH: 'hooks:get-settings-path',
   OPEN_SETTINGS_FILE: 'hooks:open-settings',
 
+  // MCP Servers
+  ADD_MCP_SERVER: 'mcp:add',
+  REMOVE_MCP_SERVER: 'mcp:remove',
+  LIST_MCP_SERVERS: 'mcp:list',
+  GET_MCP_SERVER: 'mcp:get',
+
   // Service Status
   GET_SERVICE_STATUS: 'status:get-service-status',
 

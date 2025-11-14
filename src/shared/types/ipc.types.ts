@@ -124,6 +124,21 @@ export type {
   OpenSettingsFileResponse,
 } from './ipc.hooks.types';
 
+// Re-export MCP types
+export type {
+  MCPServer,
+  MCPScope,
+  MCPTransport,
+  AddMCPServerRequest,
+  AddMCPServerResponse,
+  RemoveMCPServerRequest,
+  RemoveMCPServerResponse,
+  ListMCPServersRequest,
+  ListMCPServersResponse,
+  GetMCPServerRequest,
+  GetMCPServerResponse,
+} from './ipc.mcp.types';
+
 // Re-export system types
 export type {
   ExecuteCLIRequest,

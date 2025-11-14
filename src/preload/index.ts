@@ -51,6 +51,14 @@ const HOOKS_CHANNELS = {
   OPEN_SETTINGS_FILE: 'hooks:open-settings',
 } as const;
 
+// Define MCP channel strings directly to avoid tree-shaking
+const MCP_CHANNELS = {
+  ADD_MCP_SERVER: 'mcp:add',
+  REMOVE_MCP_SERVER: 'mcp:remove',
+  LIST_MCP_SERVERS: 'mcp:list',
+  GET_MCP_SERVER: 'mcp:get',
+} as const;
+
 // Define status channel strings directly to avoid tree-shaking
 const STATUS_CHANNELS = {
   GET_SERVICE_STATUS: 'status:get-service-status',
@@ -147,8 +155,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   browseGitHubUrl: (args: unknown) => ipcRenderer.invoke(GITHUB_CHANNELS.GITHUB_BROWSE_URL, args),
   navigateGitHubFolder: (args: unknown) =>
     ipcRenderer.invoke(GITHUB_CHANNELS.GITHUB_NAVIGATE_FOLDER, args),
-  fetchGitHubFiles: (args: unknown) =>
-    ipcRenderer.invoke(GITHUB_CHANNELS.FETCH_GITHUB_FILES, args),
+  fetchGitHubFiles: (args: unknown) => ipcRenderer.invoke(GITHUB_CHANNELS.FETCH_GITHUB_FILES, args),
   scanCommandSecurity: (args: unknown) =>
     ipcRenderer.invoke(GITHUB_CHANNELS.SCAN_COMMAND_SECURITY, args),
   autoFixCommand: (args: unknown) => ipcRenderer.invoke(GITHUB_CHANNELS.AUTO_FIX_COMMAND, args),
@@ -182,6 +189,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke(HOOKS_CHANNELS.GET_SETTINGS_PATH, args),
   openHookSettingsFile: (args: unknown) =>
     ipcRenderer.invoke(HOOKS_CHANNELS.OPEN_SETTINGS_FILE, args),
+
+  // MCP Servers
+  addMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.ADD_MCP_SERVER, args),
+  removeMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.REMOVE_MCP_SERVER, args),
+  listMCPServers: (args?: unknown) => ipcRenderer.invoke(MCP_CHANNELS.LIST_MCP_SERVERS, args),
+  getMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.GET_MCP_SERVER, args),
 
   // Service Status
   getServiceStatus: () => ipcRenderer.invoke(STATUS_CHANNELS.GET_SERVICE_STATUS),
@@ -285,6 +298,10 @@ export interface ElectronAPI {
   getHookTemplates: () => Promise<unknown>;
   getHookSettingsPath: (args: unknown) => Promise<unknown>;
   openHookSettingsFile: (args: unknown) => Promise<unknown>;
+  addMCPServer: (args: unknown) => Promise<unknown>;
+  removeMCPServer: (args: unknown) => Promise<unknown>;
+  listMCPServers: (args?: unknown) => Promise<unknown>;
+  getMCPServer: (args: unknown) => Promise<unknown>;
   listDebugLogs: () => Promise<unknown>;
   getDebugLog: (args: unknown) => Promise<unknown>;
   deleteDebugLog: (args: unknown) => Promise<unknown>;
