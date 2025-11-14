@@ -255,12 +255,17 @@ export class ClaudeService {
 
   /**
    * Remove an MCP server via `claude mcp remove` command
+   * Note: We don't pass --scope because the CLI automatically finds the server
+   * across all config files (.claude.json, .mcp.json, etc.)
    */
   async removeMCPServer(name: string, scope: MCPScope): Promise<MCPCommandResult> {
     console.log('[ClaudeService] Removing MCP server:', { name, scope });
 
     try {
-      const command = `claude mcp remove ${this.escapeArg(name)} --scope ${scope}`;
+      // Don't pass --scope - let the CLI find and remove the server automatically
+      // This fixes the issue where --scope project looks in .mcp.json,
+      // but project servers are actually in .claude.json under projects[path].mcpServers
+      const command = `claude mcp remove ${this.escapeArg(name)}`;
       console.log('[ClaudeService] Executing command:', command);
 
       const { stdout, stderr } = await execAsync(command);

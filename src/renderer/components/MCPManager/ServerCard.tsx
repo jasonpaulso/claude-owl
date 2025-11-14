@@ -59,6 +59,16 @@ export const ServerCard: React.FC<ServerCardProps> = ({ server, onRemove, onView
 
       <div className="server-card-body">
         <div className="server-info">
+          {/* Project Path (for project-scoped servers) */}
+          {server.scope === 'project' && server.projectPath && (
+            <div className="info-row">
+              <span className="info-label">Project:</span>
+              <span className="info-value" title={server.projectPath}>
+                {server.projectPath.split('/').pop() || server.projectPath}
+              </span>
+            </div>
+          )}
+
           <div className="info-row">
             <span className="info-label">Transport:</span>
             <span className="info-value">{server.transport}</span>

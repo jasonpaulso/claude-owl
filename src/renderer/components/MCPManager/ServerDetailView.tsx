@@ -49,6 +49,14 @@ export const ServerDetailView: React.FC<ServerDetailViewProps> = ({
               <span className="detail-value">{server.scope}</span>
             </div>
           )}
+          {server.scope === 'project' && server.projectPath && (
+            <div className="detail-row">
+              <span className="detail-label">Project Path:</span>
+              <span className="detail-value code" title="Full path">
+                {server.projectPath}
+              </span>
+            </div>
+          )}
         </div>
 
         {server.command && (
