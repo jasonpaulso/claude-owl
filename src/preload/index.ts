@@ -1,5 +1,16 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { IPC_CHANNELS } from '@/shared/types';
+import type {
+  ListMCPServersResponse,
+  AddMCPServerResponse,
+  RemoveMCPServerResponse,
+  TestMCPServerResponse,
+  GetMCPPlatformHintsResponse,
+  AddMCPServerRequest,
+  RemoveMCPServerRequest,
+  TestMCPServerRequest,
+  ValidateMCPConfigRequest,
+} from '@/shared/types';
 
 // Define settings channel strings directly to avoid tree-shaking
 const SETTINGS_CHANNELS = {
@@ -84,6 +95,27 @@ const GITHUB_CHANNELS = {
   IMPORT_GITHUB_COMMANDS: 'github:import-commands',
 } as const;
 
+// Define MCP channel strings directly to avoid tree-shaking
+const MCP_CHANNELS = {
+  LIST_MCP_SERVERS: 'mcp:list',
+  GET_MCP_SERVER: 'mcp:get',
+  ADD_MCP_SERVER: 'mcp:add',
+  UPDATE_MCP_SERVER: 'mcp:update',
+  REMOVE_MCP_SERVER: 'mcp:remove',
+  TEST_MCP_SERVER: 'mcp:test',
+  TEST_ALL_MCP_SERVERS: 'mcp:test-all',
+  GET_MCP_SERVER_TOOLS: 'mcp:get-tools',
+  GET_MCP_TEMPLATES: 'mcp:get-templates',
+  SEARCH_MCP_TEMPLATES: 'mcp:search-templates',
+  INSTALL_MCP_FROM_TEMPLATE: 'mcp:install-template',
+  VALIDATE_MCP_CONFIG: 'mcp:validate-config',
+  GET_MCP_ENV_VARS: 'mcp:get-env-vars',
+  SET_MCP_ENV_VAR: 'mcp:set-env-var',
+  DELETE_MCP_ENV_VAR: 'mcp:delete-env-var',
+  TOGGLE_MCP_SERVER: 'mcp:toggle',
+  GET_MCP_PLATFORM_HINTS: 'mcp:get-platform-hints',
+} as const;
+
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -147,8 +179,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   browseGitHubUrl: (args: unknown) => ipcRenderer.invoke(GITHUB_CHANNELS.GITHUB_BROWSE_URL, args),
   navigateGitHubFolder: (args: unknown) =>
     ipcRenderer.invoke(GITHUB_CHANNELS.GITHUB_NAVIGATE_FOLDER, args),
-  fetchGitHubFiles: (args: unknown) =>
-    ipcRenderer.invoke(GITHUB_CHANNELS.FETCH_GITHUB_FILES, args),
+  fetchGitHubFiles: (args: unknown) => ipcRenderer.invoke(GITHUB_CHANNELS.FETCH_GITHUB_FILES, args),
   scanCommandSecurity: (args: unknown) =>
     ipcRenderer.invoke(GITHUB_CHANNELS.SCAN_COMMAND_SECURITY, args),
   autoFixCommand: (args: unknown) => ipcRenderer.invoke(GITHUB_CHANNELS.AUTO_FIX_COMMAND, args),
@@ -185,6 +216,29 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Service Status
   getServiceStatus: () => ipcRenderer.invoke(STATUS_CHANNELS.GET_SERVICE_STATUS),
+
+  // MCP Servers
+  listMCPServers: () => ipcRenderer.invoke(MCP_CHANNELS.LIST_MCP_SERVERS),
+  getMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.GET_MCP_SERVER, args),
+  addMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.ADD_MCP_SERVER, args),
+  updateMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.UPDATE_MCP_SERVER, args),
+  removeMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.REMOVE_MCP_SERVER, args),
+  testMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.TEST_MCP_SERVER, args),
+  testAllMCPServers: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.TEST_ALL_MCP_SERVERS, args),
+  getMCPServerTools: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.GET_MCP_SERVER_TOOLS, args),
+  getMCPTemplates: () => ipcRenderer.invoke(MCP_CHANNELS.GET_MCP_TEMPLATES),
+  searchMCPTemplates: (args: unknown) =>
+    ipcRenderer.invoke(MCP_CHANNELS.SEARCH_MCP_TEMPLATES, args),
+  installMCPFromTemplate: (args: unknown) =>
+    ipcRenderer.invoke(MCP_CHANNELS.INSTALL_MCP_FROM_TEMPLATE, args),
+  validateMCPConfig: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.VALIDATE_MCP_CONFIG, args),
+  getMCPEnvironmentVariables: () => ipcRenderer.invoke(MCP_CHANNELS.GET_MCP_ENV_VARS),
+  setMCPEnvironmentVariable: (args: unknown) =>
+    ipcRenderer.invoke(MCP_CHANNELS.SET_MCP_ENV_VAR, args),
+  deleteMCPEnvironmentVariable: (args: unknown) =>
+    ipcRenderer.invoke(MCP_CHANNELS.DELETE_MCP_ENV_VAR, args),
+  toggleMCPServer: (args: unknown) => ipcRenderer.invoke(MCP_CHANNELS.TOGGLE_MCP_SERVER, args),
+  getMCPPlatformHints: () => ipcRenderer.invoke(MCP_CHANNELS.GET_MCP_PLATFORM_HINTS),
 
   // Debug Logs
   listDebugLogs: () => ipcRenderer.invoke(LOGS_CHANNELS.LIST_DEBUG_LOGS),
@@ -285,6 +339,23 @@ export interface ElectronAPI {
   getHookTemplates: () => Promise<unknown>;
   getHookSettingsPath: (args: unknown) => Promise<unknown>;
   openHookSettingsFile: (args: unknown) => Promise<unknown>;
+  listMCPServers: () => Promise<ListMCPServersResponse>;
+  getMCPServer: (args: unknown) => Promise<unknown>;
+  addMCPServer: (args: AddMCPServerRequest) => Promise<AddMCPServerResponse>;
+  updateMCPServer: (args: unknown) => Promise<unknown>;
+  removeMCPServer: (args: RemoveMCPServerRequest) => Promise<RemoveMCPServerResponse>;
+  testMCPServer: (args: TestMCPServerRequest) => Promise<TestMCPServerResponse>;
+  testAllMCPServers: (args: unknown) => Promise<unknown>;
+  getMCPServerTools: (args: unknown) => Promise<unknown>;
+  getMCPTemplates: () => Promise<unknown>;
+  searchMCPTemplates: (args: unknown) => Promise<unknown>;
+  installMCPFromTemplate: (args: unknown) => Promise<unknown>;
+  validateMCPConfig: (args: ValidateMCPConfigRequest) => Promise<unknown>;
+  getMCPEnvironmentVariables: () => Promise<unknown>;
+  setMCPEnvironmentVariable: (args: unknown) => Promise<unknown>;
+  deleteMCPEnvironmentVariable: (args: unknown) => Promise<unknown>;
+  toggleMCPServer: (args: unknown) => Promise<unknown>;
+  getMCPPlatformHints: () => Promise<GetMCPPlatformHintsResponse>;
   listDebugLogs: () => Promise<unknown>;
   getDebugLog: (args: unknown) => Promise<unknown>;
   deleteDebugLog: (args: unknown) => Promise<unknown>;
