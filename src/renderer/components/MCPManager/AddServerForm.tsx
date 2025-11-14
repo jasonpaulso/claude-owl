@@ -156,37 +156,31 @@ export const AddServerForm: React.FC<AddServerFormProps> = ({ onSubmit, onCancel
         <label>
           Transport Type <span className="required">*</span>
         </label>
-        <div className="radio-group">
-          <label className="radio-label">
-            <input
-              type="radio"
-              value="stdio"
-              checked={transport === 'stdio'}
-              onChange={e => setTransport(e.target.value as MCPTransport)}
-            />
-            <span>Stdio</span>
-            <small>Standard input/output communication</small>
-          </label>
-          <label className="radio-label">
-            <input
-              type="radio"
-              value="http"
-              checked={transport === 'http'}
-              onChange={e => setTransport(e.target.value as MCPTransport)}
-            />
-            <span>HTTP</span>
-            <small>HTTP-based communication</small>
-          </label>
-          <label className="radio-label">
-            <input
-              type="radio"
-              value="sse"
-              checked={transport === 'sse'}
-              onChange={e => setTransport(e.target.value as MCPTransport)}
-            />
-            <span>SSE</span>
-            <small>Server-Sent Events</small>
-          </label>
+        <div className="transport-selector">
+          <button
+            type="button"
+            className={`transport-option ${transport === 'stdio' ? 'active' : ''}`}
+            onClick={() => setTransport('stdio')}
+          >
+            <span className="transport-name">Stdio</span>
+            <span className="transport-desc">Standard input/output</span>
+          </button>
+          <button
+            type="button"
+            className={`transport-option ${transport === 'http' ? 'active' : ''}`}
+            onClick={() => setTransport('http')}
+          >
+            <span className="transport-name">HTTP</span>
+            <span className="transport-desc">HTTP-based</span>
+          </button>
+          <button
+            type="button"
+            className={`transport-option ${transport === 'sse' ? 'active' : ''}`}
+            onClick={() => setTransport('sse')}
+          >
+            <span className="transport-name">SSE</span>
+            <span className="transport-desc">Server-Sent Events</span>
+          </button>
         </div>
       </div>
 
