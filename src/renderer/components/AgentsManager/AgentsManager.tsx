@@ -474,7 +474,7 @@ const AgentEditModal: React.FC<AgentEditModalProps> = ({ agent, onClose, onSave 
                   <SelectTrigger id="agent-location">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[1100]">
                     <SelectItem value="user">User (~/.claude/agents/)</SelectItem>
                     <SelectItem value="project">Project (.claude/agents/)</SelectItem>
                   </SelectContent>
@@ -492,7 +492,7 @@ const AgentEditModal: React.FC<AgentEditModalProps> = ({ agent, onClose, onSave 
                   <SelectTrigger id="agent-model">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[1100]">
                     <SelectItem value="default">Default</SelectItem>
                     <SelectItem value="sonnet">Sonnet</SelectItem>
                     <SelectItem value="opus">Opus</SelectItem>
