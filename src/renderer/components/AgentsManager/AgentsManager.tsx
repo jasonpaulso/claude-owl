@@ -403,7 +403,11 @@ const AgentEditModal: React.FC<AgentEditModalProps> = ({ agent, onClose, onSave 
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content agent-modal" onClick={e => e.stopPropagation()}>
+      <div
+        className="modal-content agent-modal"
+        onClick={e => e.stopPropagation()}
+        style={{ background: '#ffffff' }}
+      >
         <div className="modal-header">
           <h2>{isEditing ? 'Edit Subagent' : 'Create New Subagent'}</h2>
           <button onClick={onClose} className="modal-close">
@@ -563,7 +567,11 @@ const AgentDetailModal: React.FC<AgentDetailModalProps> = ({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content agent-detail-modal" onClick={e => e.stopPropagation()}>
+      <div
+        className="modal-content agent-detail-modal"
+        onClick={e => e.stopPropagation()}
+        style={{ background: '#ffffff' }}
+      >
         <div className="modal-header">
           <div>
             <h2>{agent.frontmatter.name}</h2>

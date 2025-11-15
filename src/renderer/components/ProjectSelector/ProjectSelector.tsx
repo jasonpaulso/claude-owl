@@ -1,15 +1,28 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useProjects } from '../../hooks/useProjects';
 import { useProjectContext } from '../../contexts/ProjectContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';
 import { Button } from '../ui/button';
 import { Alert, AlertDescription } from '../ui/alert';
-import { FolderIcon, ServerIcon, AlertCircleIcon, RefreshCwIcon, CheckIcon } from 'lucide-react';
+import { FolderIcon, ServerIcon, AlertCircleIcon, RefreshCwIcon, CheckIcon, SearchIcon, XIcon } from 'lucide-react';
 import type { ProjectInfo } from '@/shared/types';
 
 export const ProjectSelector: React.FC = () => {
   const { loading, projects, error, configExists, refetch } = useProjects();
   const { selectedProject, selectProject, clearSelection } = useProjectContext();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter projects based on search query
+  const filteredProjects = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return projects;
+    }
+    const query = searchQuery.toLowerCase();
+    return projects.filter(
+      project =>
+        project.name.toLowerCase().includes(query) || project.path.toLowerCase().includes(query)
+    );
+  }, [projects, searchQuery]);
 
   // No .claude.json found
   if (!loading && !configExists) {
@@ -121,6 +134,28 @@ export const ProjectSelector: React.FC = () => {
         </Button>
       </div>
 
+      {/* Search bar */}
+      {projects.length > 0 && (
+        <div className="relative">
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search projects by name or path..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <XIcon className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="grid gap-3">
         {/* User-level settings card */}
         <Card
@@ -154,14 +189,35 @@ export const ProjectSelector: React.FC = () => {
         </Card>
 
         {/* Project cards */}
-        {projects.map(project => (
-          <ProjectCard
-            key={project.path}
-            project={project}
-            isSelected={selectedProject?.path === project.path}
-            onSelect={() => selectProject(project)}
-          />
-        ))}
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map(project => (
+            <ProjectCard
+              key={project.path}
+              project={project}
+              isSelected={selectedProject?.path === project.path}
+              onSelect={() => selectProject(project)}
+            />
+          ))
+        ) : (
+          searchQuery && (
+            <Card className="border-gray-200">
+              <CardContent className="p-8 text-center">
+                <SearchIcon className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                <p className="text-sm text-gray-600">
+                  No projects found matching &quot;{searchQuery}&quot;
+                </p>
+                <Button
+                  onClick={() => setSearchQuery('')}
+                  variant="outline"
+                  size="sm"
+                  className="mt-3"
+                >
+                  Clear Search
+                </Button>
+              </CardContent>
+            </Card>
+          )
+        )}
       </div>
     </div>
   );

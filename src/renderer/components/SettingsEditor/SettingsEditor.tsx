@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { User, Lock, BookOpen, FolderIcon } from 'lucide-react';
+import { User, Lock, BookOpen, FolderIcon, ArrowLeftIcon } from 'lucide-react';
 import type { ConfigLevel } from '@/shared/types';
 import { SettingsHierarchyTab } from './SettingsHierarchyTab';
 import { PageHeader } from '../common/PageHeader';
 import { ProjectSelector } from '../ProjectSelector/ProjectSelector';
 import { useProjectContext } from '../../contexts/ProjectContext';
 import { cn } from '@/renderer/lib/utils';
+import { Button } from '../ui/button';
 
 type TabType = 'user' | 'project' | 'managed';
 
 export const SettingsEditor: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('user');
-  const { selectedProject } = useProjectContext();
+  const { selectedProject, clearSelection } = useProjectContext();
 
   const renderTabContent = () => {
     // If project tab is selected, show ProjectSelector first
@@ -23,8 +24,27 @@ export const SettingsEditor: React.FC = () => {
           </div>
         );
       }
-      // Show project settings if a project is selected
-      return <SettingsHierarchyTab level="project" />;
+      // Show project settings if a project is selected with a "Change Project" button
+      return (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded">
+                <FolderIcon className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-neutral-900">{selectedProject.name}</h3>
+                <p className="text-sm text-neutral-600">{selectedProject.path}</p>
+              </div>
+            </div>
+            <Button onClick={clearSelection} variant="outline" size="sm" className="gap-2">
+              <ArrowLeftIcon className="h-4 w-4" />
+              Change Project
+            </Button>
+          </div>
+          <SettingsHierarchyTab level="project" />
+        </div>
+      );
     }
 
     return <SettingsHierarchyTab level={activeTab as ConfigLevel} />;
