@@ -129,7 +129,6 @@ app.whenReady().then(() => {
   registerStatusHandlers();
   registerDebugLogsHandlers();
   registerGitHubImportHandlers();
-  registerMCPHandlers();
 
   createWindow();
 
