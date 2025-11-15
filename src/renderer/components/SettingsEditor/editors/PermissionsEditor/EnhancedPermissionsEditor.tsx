@@ -5,6 +5,8 @@ import { PermissionRuleItem } from './PermissionRule';
 import { RuleEditorModal } from './RuleEditorModal';
 import { RuleTemplatesModal } from './RuleTemplatesModal';
 import { RuleTester } from './RuleTester';
+import { Button } from '@/renderer/components/ui/button';
+import { Plus, FileText, FlaskConical, ShieldBan, ShieldAlert, ShieldCheck } from 'lucide-react';
 import './PermissionsEditor.css';
 
 interface EnhancedPermissionsEditorProps {
@@ -172,15 +174,18 @@ export const EnhancedPermissionsEditor: React.FC<EnhancedPermissionsEditorProps>
 
         {!readOnly && (
           <div className="editor-actions">
-            <button onClick={handleAddRule} className="btn-primary">
-              + Add Rule
-            </button>
-            <button onClick={() => setShowTemplates(true)} className="btn-secondary">
-              📋 Templates
-            </button>
-            <button onClick={() => setShowTester(!showTester)} className="btn-secondary">
-              🧪 Test Rules
-            </button>
+            <Button onClick={handleAddRule} variant="default">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Rule
+            </Button>
+            <Button onClick={() => setShowTemplates(true)} variant="secondary">
+              <FileText className="h-4 w-4 mr-2" />
+              Templates
+            </Button>
+            <Button onClick={() => setShowTester(!showTester)} variant="secondary">
+              <FlaskConical className="h-4 w-4 mr-2" />
+              Test Rules
+            </Button>
           </div>
         )}
       </div>
@@ -191,7 +196,10 @@ export const EnhancedPermissionsEditor: React.FC<EnhancedPermissionsEditorProps>
       {/* Deny Rules */}
       <div className="rules-section">
         <div className="section-header">
-          <h4 className="section-title deny">🚫 DENY Rules ({denyRules.length})</h4>
+          <h4 className="section-title deny flex items-center gap-2">
+            <ShieldBan className="h-5 w-5" />
+            DENY Rules ({denyRules.length})
+          </h4>
           <p className="section-description">Highest priority - always blocked</p>
         </div>
         <div className="rules-list">
@@ -211,7 +219,10 @@ export const EnhancedPermissionsEditor: React.FC<EnhancedPermissionsEditorProps>
       {/* Ask Rules */}
       <div className="rules-section">
         <div className="section-header">
-          <h4 className="section-title ask">⚠️ ASK Rules ({askRules.length})</h4>
+          <h4 className="section-title ask flex items-center gap-2">
+            <ShieldAlert className="h-5 w-5" />
+            ASK Rules ({askRules.length})
+          </h4>
           <p className="section-description">Require confirmation before execution</p>
         </div>
         <div className="rules-list">
@@ -231,7 +242,10 @@ export const EnhancedPermissionsEditor: React.FC<EnhancedPermissionsEditorProps>
       {/* Allow Rules */}
       <div className="rules-section">
         <div className="section-header">
-          <h4 className="section-title allow">✅ ALLOW Rules ({allowRules.length})</h4>
+          <h4 className="section-title allow flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5" />
+            ALLOW Rules ({allowRules.length})
+          </h4>
           <p className="section-description">Auto-approved operations</p>
         </div>
         <div className="rules-list">
