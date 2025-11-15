@@ -57,18 +57,14 @@ describe('LoadingSpinner', () => {
   });
 
   it('should apply custom className', () => {
-    const { container } = render(
-      <LoadingSpinner className="custom-class" />
-    );
+    const { container } = render(<LoadingSpinner className="custom-class" />);
 
     const wrapper = container.firstChild;
     expect(wrapper).toHaveClass('custom-class');
   });
 
   it('should apply custom className to wrapper div', () => {
-    const { container } = render(
-      <LoadingSpinner className="my-custom-class" />
-    );
+    const { container } = render(<LoadingSpinner className="my-custom-class" />);
 
     expect(container.firstChild).toHaveClass('my-custom-class');
   });

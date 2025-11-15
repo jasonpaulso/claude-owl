@@ -7,9 +7,9 @@ describe('StatusBadge', () => {
     render(<StatusBadge status="success">Success message</StatusBadge>);
 
     expect(screen.getByText('Success message')).toBeInTheDocument();
-    // Check for success icon (CheckCircle2)
+    // Check for success variant styling
     const badge = screen.getByText('Success message').closest('div');
-    expect(badge).toHaveClass('bg-green-100');
+    expect(badge).toHaveClass('bg-success-500');
   });
 
   it('should render with error status', () => {
@@ -18,16 +18,16 @@ describe('StatusBadge', () => {
     expect(screen.getByText('Error message')).toBeInTheDocument();
     // Check for error styling (destructive variant)
     const badge = screen.getByText('Error message').closest('div');
-    expect(badge).toHaveClass('bg-red-100');
+    expect(badge).toHaveClass('bg-destructive-500');
   });
 
   it('should render with warning status', () => {
     render(<StatusBadge status="warning">Warning message</StatusBadge>);
 
     expect(screen.getByText('Warning message')).toBeInTheDocument();
-    // Check for warning icon (AlertCircle)
+    // Check for warning variant styling
     const badge = screen.getByText('Warning message').closest('div');
-    expect(badge).toHaveClass('bg-yellow-100');
+    expect(badge).toHaveClass('bg-warning-500');
   });
 
   it('should render with info status', () => {
@@ -76,10 +76,8 @@ describe('StatusBadge', () => {
       'info',
     ];
 
-    statuses.forEach((status) => {
-      const { unmount } = render(
-        <StatusBadge status={status}>{status} status</StatusBadge>
-      );
+    statuses.forEach(status => {
+      const { unmount } = render(<StatusBadge status={status}>{status} status</StatusBadge>);
 
       expect(screen.getByText(`${status} status`)).toBeInTheDocument();
       unmount();

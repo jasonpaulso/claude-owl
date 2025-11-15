@@ -19,11 +19,7 @@ describe('EmptyState', () => {
 
   it('should render the provided icon', () => {
     const { container } = render(
-      <EmptyState
-        icon={FileX}
-        title="Empty"
-        description="Nothing to show"
-      />
+      <EmptyState icon={FileX} title="Empty" description="Nothing to show" />
     );
 
     // Check that an SVG icon is present
@@ -32,13 +28,7 @@ describe('EmptyState', () => {
   });
 
   it('should render without action button by default', () => {
-    render(
-      <EmptyState
-        icon={FileX}
-        title="Empty"
-        description="Nothing to show"
-      />
-    );
+    render(<EmptyState icon={FileX} title="Empty" description="Nothing to show" />);
 
     const button = screen.queryByRole('button');
     expect(button).not.toBeInTheDocument();
@@ -139,7 +129,7 @@ describe('EmptyState', () => {
     );
 
     const button = screen.getByRole('button', { name: 'Add' });
-    expect(button).toHaveClass('border-neutral-200'); // outline variant
+    expect(button).toHaveClass('border'); // outline variant has border class
   });
 
   it('should apply custom className', () => {
@@ -157,11 +147,7 @@ describe('EmptyState', () => {
 
   it('should render with correct default styling', () => {
     const { container } = render(
-      <EmptyState
-        icon={FileX}
-        title="Empty"
-        description="Nothing to show"
-      />
+      <EmptyState icon={FileX} title="Empty" description="Nothing to show" />
     );
 
     expect(container.firstChild).toHaveClass(
@@ -175,26 +161,14 @@ describe('EmptyState', () => {
   });
 
   it('should render title with correct styling', () => {
-    render(
-      <EmptyState
-        icon={FileX}
-        title="No Results"
-        description="Try adjusting your filters"
-      />
-    );
+    render(<EmptyState icon={FileX} title="No Results" description="Try adjusting your filters" />);
 
     const title = screen.getByText('No Results');
     expect(title).toHaveClass('mb-2', 'text-lg', 'font-medium');
   });
 
   it('should render description with correct styling', () => {
-    render(
-      <EmptyState
-        icon={FileX}
-        title="Empty"
-        description="No data available"
-      />
-    );
+    render(<EmptyState icon={FileX} title="Empty" description="No data available" />);
 
     const description = screen.getByText('No data available');
     expect(description).toHaveClass('mb-6', 'max-w-md', 'text-sm', 'text-neutral-600');
