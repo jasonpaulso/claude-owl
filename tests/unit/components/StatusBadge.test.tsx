@@ -58,7 +58,7 @@ describe('StatusBadge', () => {
   });
 
   it('should apply custom className', () => {
-    const { container } = render(
+    render(
       <StatusBadge status="success" className="custom-class">
         Custom styled
       </StatusBadge>
