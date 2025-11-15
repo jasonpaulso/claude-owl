@@ -14,25 +14,8 @@ import {
 import { Button } from '@/renderer/components/ui/button';
 import { Badge } from '@/renderer/components/ui/badge';
 import { Input } from '@/renderer/components/ui/input';
-import { Label } from '@/renderer/components/ui/label';
-import { Textarea } from '@/renderer/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/renderer/components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/renderer/components/ui/dialog';
 import { Alert, AlertDescription } from '@/renderer/components/ui/alert';
 import { EmptyState } from '../common/EmptyState';
-import { cn } from '@/renderer/lib/utils';
 
 export const AgentsManager: React.FC = () => {
   const { agents, loading, error, refetch, saveAgent, deleteAgent } = useAgents();

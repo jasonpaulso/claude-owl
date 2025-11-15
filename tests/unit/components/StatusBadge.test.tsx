@@ -58,14 +58,16 @@ describe('StatusBadge', () => {
   });
 
   it('should apply custom className', () => {
-    render(
+    const { container } = render(
       <StatusBadge status="success" className="custom-class">
         Custom styled
       </StatusBadge>
     );
 
-    const badge = screen.getByText('Custom styled').parentElement;
-    expect(badge).toHaveClass('custom-class');
+    // StatusBadge renders a Badge component which is a span/div with the className
+    const badge = container.querySelector('.custom-class');
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveTextContent('Custom styled');
   });
 
   it('should render all status variants correctly', () => {

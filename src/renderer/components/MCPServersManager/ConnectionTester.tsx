@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle, XCircle, Loader2, Clock, Package } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, Clock, Package } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
 import type { MCPConnectionTestResult } from '@/shared/types';
 

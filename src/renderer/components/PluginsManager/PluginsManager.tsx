@@ -565,7 +565,7 @@ interface PluginCardProps {
 
 const PluginCard: React.FC<PluginCardProps> = ({
   plugin,
-  viewMode,
+  viewMode: _viewMode,
   onView,
   onInstall,
   onUninstall,

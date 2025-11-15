@@ -9,7 +9,7 @@ import {
   Trash2,
   TestTube,
 } from 'lucide-react';
-import { Card, CardHeader, CardContent, CardFooter } from '../ui/card';
+import { Card, CardHeader, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Alert, AlertDescription } from '../ui/alert';
