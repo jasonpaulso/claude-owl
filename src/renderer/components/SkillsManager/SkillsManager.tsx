@@ -4,7 +4,31 @@ import type { Skill } from '@/shared/types';
 import { parseMarkdownWithFrontmatter, validateSkillMarkdown } from '@/shared/utils/markdown.utils';
 import { ConfirmDialog } from '../common/ConfirmDialog';
 import { PageHeader } from '../common/PageHeader';
-import './SkillsManager.css';
+import { Card, CardContent, CardHeader } from '@/renderer/components/ui/card';
+import { Button } from '@/renderer/components/ui/button';
+import { Badge } from '@/renderer/components/ui/badge';
+import { Input } from '@/renderer/components/ui/input';
+import { Textarea } from '@/renderer/components/ui/textarea';
+import { Label } from '@/renderer/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/renderer/components/ui/select';
+import { Alert, AlertDescription } from '@/renderer/components/ui/alert';
+import {
+  FileCode,
+  Wrench,
+  Folder,
+  Upload,
+  X,
+  AlertCircle,
+  Trash2,
+  Clock,
+  Plus,
+} from 'lucide-react';
 
 export const SkillsManager: React.FC = () => {
   const { skills, loading, error, refetch, createSkill, deleteSkill } = useSkills();
@@ -29,11 +53,9 @@ export const SkillsManager: React.FC = () => {
   };
 
   const handleDeleteSkill = (skill: Skill) => {
-    // Plugin skills cannot be deleted
     if (skill.location === 'plugin') {
       return;
     }
-
     setDeleteConfirm(skill);
   };
 
@@ -52,13 +74,13 @@ export const SkillsManager: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="skills-manager" data-testid="skills-manager">
+      <div className="h-full flex flex-col bg-white p-8" data-testid="skills-manager">
         <PageHeader
           title="Skills"
           description="Custom skills that extend Claude Code capabilities"
         />
-        <div className="skills-loading">
-          <p>Loading skills...</p>
+        <div className="text-center py-16">
+          <p className="text-neutral-500">Loading skills...</p>
         </div>
       </div>
     );
@@ -66,7 +88,7 @@ export const SkillsManager: React.FC = () => {
 
   if (error) {
     return (
-      <div className="skills-manager" data-testid="skills-manager">
+      <div className="h-full flex flex-col bg-white p-8" data-testid="skills-manager">
         <PageHeader
           title="Skills"
           description="Custom skills that extend Claude Code capabilities"
@@ -78,15 +100,17 @@ export const SkillsManager: React.FC = () => {
             },
           ]}
         />
-        <div className="skills-error">
-          <p className="error-message">Error: {error}</p>
+        <div className="text-center py-16">
+          <Alert variant="destructive">
+            <AlertDescription>Error: {error}</AlertDescription>
+          </Alert>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="skills-manager" data-testid="skills-manager">
+    <div className="h-full flex flex-col bg-white p-8" data-testid="skills-manager">
       <PageHeader
         title="Skills"
         description="Custom skills that extend Claude Code capabilities"
@@ -94,21 +118,26 @@ export const SkillsManager: React.FC = () => {
           {
             label: '+ Create Skill',
             onClick: handleCreateSkill,
-            variant: 'primary',
+            variant: 'default',
+            icon: Plus,
           },
         ]}
       />
 
-      <div className="skills-content">
+      <div className="flex-1 mt-8">
         {skills.length === 0 ? (
-          <div className="skills-empty">
-            <p>No skills found. Create your first skill to get started!</p>
-            <button onClick={handleCreateSkill} className="btn-create-empty">
+          <div className="text-center py-16">
+            <FileCode className="h-16 w-16 text-neutral-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No Skills Yet</h3>
+            <p className="text-neutral-600 mb-6">
+              Create your first skill to extend Claude Code&apos;s capabilities!
+            </p>
+            <Button onClick={handleCreateSkill} size="lg">
               Create Your First Skill
-            </button>
+            </Button>
           </div>
         ) : (
-          <div className="skills-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {skills.map(skill => (
               <SkillCard
                 key={`${skill.location}-${skill.frontmatter.name}`}
@@ -153,31 +182,48 @@ interface SkillCardProps {
 }
 
 const SkillCard: React.FC<SkillCardProps> = ({ skill, onView }) => {
-  const locationBadge =
-    skill.location === 'user' ? 'User' : skill.location === 'project' ? 'Project' : 'Plugin';
-  const locationClass = `location-badge location-${skill.location}`;
+  const locationVariant =
+    skill.location === 'user'
+      ? 'default'
+      : skill.location === 'project'
+        ? 'secondary'
+        : 'outline';
 
   return (
-    <div className="skill-card" data-testid="skill-card" onClick={() => onView(skill)}>
-      <div className="skill-card-header">
-        <h3 className="skill-name">{skill.frontmatter.name}</h3>
-        <span className={locationClass}>{locationBadge}</span>
-      </div>
-      <p className="skill-description">{skill.frontmatter.description}</p>
-      {skill.supportingFiles && skill.supportingFiles.length > 0 && (
-        <div className="skill-files">
-          <span className="files-count">{skill.supportingFiles.length} supporting files</span>
+    <Card
+      className="cursor-pointer transition-all hover:border-blue-500 hover:shadow-md hover:-translate-y-0.5"
+      data-testid="skill-card"
+      onClick={() => onView(skill)}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex justify-between items-start">
+          <h3 className="text-xl font-semibold text-neutral-900 flex-1 break-words">
+            {skill.frontmatter.name}
+          </h3>
+          <Badge variant={locationVariant} className="ml-2 shrink-0">
+            {skill.location.charAt(0).toUpperCase() + skill.location.slice(1)}
+          </Badge>
         </div>
-      )}
-      {skill.frontmatter['allowed-tools'] && skill.frontmatter['allowed-tools'].length > 0 && (
-        <div className="skill-tools">
-          <span className="tools-label">Tools:</span>
-          <span className="tools-count">
-            {skill.frontmatter['allowed-tools'].length} restricted
-          </span>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-neutral-600 line-clamp-2">{skill.frontmatter.description}</p>
+
+        <div className="flex flex-wrap gap-3 text-sm">
+          {skill.supportingFiles && skill.supportingFiles.length > 0 && (
+            <div className="flex items-center gap-1 text-neutral-600">
+              <Folder className="h-4 w-4" />
+              <span>{skill.supportingFiles.length} files</span>
+            </div>
+          )}
+          {skill.frontmatter['allowed-tools'] && skill.frontmatter['allowed-tools'].length > 0 && (
+            <div className="flex items-center gap-1 text-neutral-600">
+              <Wrench className="h-4 w-4" />
+              <span>{skill.frontmatter['allowed-tools'].length} tools</span>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -204,7 +250,6 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
 
-  // Track unsaved changes
   useEffect(() => {
     const hasContent = !!(
       name.trim() ||
@@ -219,7 +264,6 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check file type
     if (!file.name.endsWith('.md')) {
       setError('Please upload a Markdown (.md) file');
       return;
@@ -227,8 +271,6 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
 
     try {
       const text = await file.text();
-
-      // Validate the markdown structure
       const validation = validateSkillMarkdown(text);
 
       if (!validation.isValid) {
@@ -237,14 +279,12 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
         return;
       }
 
-      // Parse the file
       const parsed = parseMarkdownWithFrontmatter<{
         name?: string;
         description?: string;
         'allowed-tools'?: string[];
       }>(text);
 
-      // Populate form with parsed data
       if (parsed.frontmatter.name) setName(parsed.frontmatter.name);
       if (parsed.frontmatter.description) setDescription(parsed.frontmatter.description);
       if (parsed.content) setContent(parsed.content);
@@ -252,7 +292,6 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
         setAllowedTools(parsed.frontmatter['allowed-tools'].join(', '));
       }
 
-      // Show warnings if any
       if (validation.warnings.length > 0) {
         setValidationWarnings(validation.warnings);
       }
@@ -262,7 +301,6 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
       setError(`Failed to read file: ${err instanceof Error ? err.message : 'Unknown error'}`);
     }
 
-    // Reset file input
     e.target.value = '';
   };
 
@@ -272,15 +310,6 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
     } else {
       onClose();
     }
-  };
-
-  const handleConfirmClose = () => {
-    setShowCloseConfirm(false);
-    onClose();
-  };
-
-  const handleCancelClose = () => {
-    setShowCloseConfirm(false);
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -304,7 +333,7 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
     const success = await onCreate(name, description, content, location, toolsArray);
 
     if (success) {
-      setHasUnsavedChanges(false); // Mark as saved before closing
+      setHasUnsavedChanges(false);
       onClose();
     } else {
       setError('Failed to create skill. Please check your inputs and try again.');
@@ -315,60 +344,77 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
 
   return (
     <>
-      <div className="modal-overlay" onClick={handleOverlayClick}>
-        <div className="modal-content" onClick={e => e.stopPropagation()}>
-          <div className="modal-header">
-            <h2>Create New Skill</h2>
-            <button className="btn-close" onClick={handleClose} type="button">
-              ×
-            </button>
+      <div
+        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-8"
+        onClick={handleOverlayClick}
+      >
+        <div
+          className="bg-white rounded-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl"
+          onClick={e => e.stopPropagation()}
+        >
+          <div className="flex justify-between items-center p-6 border-b">
+            <h2 className="text-2xl font-semibold">Create New Skill</h2>
+            <Button variant="ghost" size="icon" onClick={handleClose}>
+              <X className="h-5 w-5" />
+            </Button>
           </div>
 
-          <form onSubmit={handleSubmit} className="skill-form">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {error && (
-              <div className="form-error">
-                {error.split('\n').map((line, i) => (
-                  <div key={i}>{line}</div>
-                ))}
-              </div>
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {error.split('\n').map((line, i) => (
+                    <div key={i}>{line}</div>
+                  ))}
+                </AlertDescription>
+              </Alert>
             )}
 
             {validationWarnings.length > 0 && (
-              <div className="form-warning">
-                <strong>Warnings:</strong>
-                {validationWarnings.map((warning, i) => (
-                  <div key={i}>• {warning}</div>
-                ))}
-              </div>
+              <Alert variant="default" className="border-amber-200 bg-amber-50">
+                <AlertCircle className="h-4 w-4 text-amber-600" />
+                <AlertDescription className="text-amber-900">
+                  <strong>Warnings:</strong>
+                  {validationWarnings.map((warning, i) => (
+                    <div key={i}>• {warning}</div>
+                  ))}
+                </AlertDescription>
+              </Alert>
             )}
 
-            <div className="form-group file-upload-group">
-              <label htmlFor="skill-file-upload">Upload Skill File (Optional)</label>
-              <div className="file-upload-container">
-                <input
+            <div className="space-y-2">
+              <Label htmlFor="skill-file-upload">Upload Skill File (Optional)</Label>
+              <div className="flex items-center gap-3">
+                <Input
                   id="skill-file-upload"
                   type="file"
                   accept=".md"
                   onChange={handleFileUpload}
-                  className="file-input"
+                  className="flex-1"
                   data-testid="skill-file-input"
                 />
-                <label htmlFor="skill-file-upload" className="file-upload-label">
-                  📁 Choose .md file
-                </label>
-                <small>Upload a skill markdown file to auto-fill the form</small>
+                <Upload className="h-4 w-4 text-neutral-400" />
+              </div>
+              <p className="text-sm text-neutral-600">
+                Upload a skill markdown file to auto-fill the form
+              </p>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-2 text-neutral-500">Or create manually</span>
               </div>
             </div>
 
-            <div className="form-divider">
-              <span>Or create manually</span>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="skill-name">
-                Name <span className="required">*</span>
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="skill-name">
+                Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
                 id="skill-name"
                 type="text"
                 value={name}
@@ -379,14 +425,16 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
                 required
                 data-testid="skill-name-input"
               />
-              <small>Lowercase letters, numbers, and hyphens only (max 64 chars)</small>
+              <p className="text-sm text-neutral-600">
+                Lowercase letters, numbers, and hyphens only (max 64 chars)
+              </p>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="skill-description">
-                Description <span className="required">*</span>
-              </label>
-              <textarea
+            <div className="space-y-2">
+              <Label htmlFor="skill-description">
+                Description <span className="text-red-500">*</span>
+              </Label>
+              <Textarea
                 id="skill-description"
                 value={description}
                 onChange={e => setDescription(e.target.value)}
@@ -396,44 +444,47 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
                 required
                 data-testid="skill-description-input"
               />
-              <small>Max 1024 characters. Include triggers and use cases.</small>
+              <p className="text-sm text-neutral-600">
+                Max 1024 characters. Include triggers and use cases.
+              </p>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="skill-content">
-                Instructions <span className="required">*</span>
-              </label>
-              <textarea
+            <div className="space-y-2">
+              <Label htmlFor="skill-content">
+                Instructions <span className="text-red-500">*</span>
+              </Label>
+              <Textarea
                 id="skill-content"
                 value={content}
                 onChange={e => setContent(e.target.value)}
-                placeholder="# My Skill\n\nDetailed instructions for Claude on how to use this skill..."
+                placeholder="# My Skill&#10;&#10;Detailed instructions for Claude on how to use this skill..."
                 rows={10}
                 required
                 data-testid="skill-content-input"
               />
-              <small>Markdown content with detailed instructions</small>
+              <p className="text-sm text-neutral-600">Markdown content with detailed instructions</p>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="skill-location">
-                Location <span className="required">*</span>
-              </label>
-              <select
-                id="skill-location"
-                value={location}
-                onChange={e => setLocation(e.target.value as 'user' | 'project')}
-                required
-                data-testid="skill-location-select"
-              >
-                <option value="user">User (~/.claude/skills/) - Personal skills</option>
-                <option value="project">Project (.claude/skills/) - Team skills</option>
-              </select>
+            <div className="space-y-2">
+              <Label htmlFor="skill-location">
+                Location <span className="text-red-500">*</span>
+              </Label>
+              <Select value={location} onValueChange={v => setLocation(v as 'user' | 'project')}>
+                <SelectTrigger id="skill-location" data-testid="skill-location-select">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">User (~/.claude/skills/) - Personal skills</SelectItem>
+                  <SelectItem value="project">
+                    Project (.claude/skills/) - Team skills
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="skill-tools">Allowed Tools (optional)</label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="skill-tools">Allowed Tools (optional)</Label>
+              <Input
                 id="skill-tools"
                 type="text"
                 value={allowedTools}
@@ -441,48 +492,53 @@ const SkillCreateModal: React.FC<SkillCreateModalProps> = ({ onClose, onCreate }
                 placeholder="Read, Write, Bash"
                 data-testid="skill-tools-input"
               />
-              <small>Comma-separated list of allowed tools (leave empty for all tools)</small>
+              <p className="text-sm text-neutral-600">
+                Comma-separated list of allowed tools (leave empty for all tools)
+              </p>
             </div>
 
-            <div className="form-actions">
-              <button
-                type="button"
-                onClick={handleClose}
-                className="btn-secondary"
-                disabled={creating}
-              >
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button type="button" onClick={handleClose} variant="secondary" disabled={creating}>
                 Cancel
-              </button>
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={creating}
-                data-testid="submit-skill-btn"
-              >
+              </Button>
+              <Button type="submit" disabled={creating} data-testid="submit-skill-btn">
                 {creating ? 'Creating...' : 'Create Skill'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
       </div>
 
-      {/* Confirmation dialog for unsaved changes */}
       {showCloseConfirm && (
-        <div className="modal-overlay confirm-overlay" onClick={handleCancelClose}>
-          <div className="modal-content modal-confirm" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Unsaved Changes</h2>
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60]"
+          onClick={() => setShowCloseConfirm(false)}
+        >
+          <div
+            className="bg-white rounded-xl w-full max-w-md shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="p-6 border-b">
+              <h2 className="text-xl font-semibold">Unsaved Changes</h2>
             </div>
-            <div className="confirm-body">
-              <p>You have unsaved changes. Are you sure you want to close without saving?</p>
+            <div className="p-6">
+              <p className="text-neutral-600">
+                You have unsaved changes. Are you sure you want to close without saving?
+              </p>
             </div>
-            <div className="modal-footer">
-              <button onClick={handleCancelClose} className="btn-secondary">
+            <div className="flex justify-end gap-3 p-6 border-t">
+              <Button onClick={() => setShowCloseConfirm(false)} variant="secondary">
                 Keep Editing
-              </button>
-              <button onClick={handleConfirmClose} className="btn-danger">
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowCloseConfirm(false);
+                  onClose();
+                }}
+                variant="destructive"
+              >
                 Discard Changes
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -498,8 +554,12 @@ interface SkillDetailModalProps {
 }
 
 const SkillDetailModal: React.FC<SkillDetailModalProps> = ({ skill, onClose, onDelete }) => {
-  const locationBadge =
-    skill.location === 'user' ? 'User' : skill.location === 'project' ? 'Project' : 'Plugin';
+  const locationVariant =
+    skill.location === 'user'
+      ? 'default'
+      : skill.location === 'project'
+        ? 'secondary'
+        : 'outline';
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -508,77 +568,96 @@ const SkillDetailModal: React.FC<SkillDetailModalProps> = ({ skill, onClose, onD
   };
 
   return (
-    <div className="modal-overlay" onClick={handleOverlayClick}>
-      <div className="modal-content modal-large" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <div>
-            <h2>{skill.frontmatter.name}</h2>
-            <span className={`location-badge location-${skill.location}`}>{locationBadge}</span>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-8"
+      onClick={handleOverlayClick}
+    >
+      <div
+        className="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="flex justify-between items-center p-6 border-b">
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-semibold">{skill.frontmatter.name}</h2>
+            <Badge variant={locationVariant}>
+              {skill.location.charAt(0).toUpperCase() + skill.location.slice(1)}
+            </Badge>
           </div>
-          <button className="btn-close" onClick={onClose}>
-            ×
-          </button>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-5 w-5" />
+          </Button>
         </div>
 
-        <div className="skill-detail">
-          <div className="detail-section">
-            <h3>Description</h3>
-            <p>{skill.frontmatter.description}</p>
+        <div className="p-6 space-y-8">
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Description</h3>
+            <p className="text-neutral-600">{skill.frontmatter.description}</p>
           </div>
 
           {skill.frontmatter['allowed-tools'] && skill.frontmatter['allowed-tools'].length > 0 && (
-            <div className="detail-section">
-              <h3>Allowed Tools</h3>
-              <div className="tools-list">
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Allowed Tools</h3>
+              <div className="flex flex-wrap gap-2">
                 {skill.frontmatter['allowed-tools'].map(tool => (
-                  <span key={tool} className="tool-badge">
+                  <Badge key={tool} variant="secondary">
                     {tool}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>
           )}
 
-          <div className="detail-section">
-            <h3>Instructions</h3>
-            <pre className="skill-content">{skill.content}</pre>
+          <div>
+            <h3 className="text-lg font-semibold mb-3">Instructions</h3>
+            <pre className="bg-neutral-50 p-4 rounded-md overflow-x-auto font-mono text-sm leading-relaxed whitespace-pre-wrap break-words">
+              {skill.content}
+            </pre>
           </div>
 
           {skill.supportingFiles && skill.supportingFiles.length > 0 && (
-            <div className="detail-section">
-              <h3>Supporting Files</h3>
-              <ul className="files-list">
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Supporting Files</h3>
+              <ul className="list-disc list-inside space-y-1 text-neutral-600">
                 {skill.supportingFiles.map(file => (
-                  <li key={file}>{file}</li>
+                  <li key={file} className="font-mono text-sm">
+                    {file}
+                  </li>
                 ))}
               </ul>
             </div>
           )}
 
-          <div className="detail-section">
-            <h3>File Location</h3>
-            <code className="file-path">{skill.filePath}</code>
-          </div>
-
-          <div className="detail-section">
-            <h3>Last Modified</h3>
-            <p>{new Date(skill.lastModified).toLocaleString()}</p>
+          <div className="space-y-4 text-sm">
+            <div>
+              <span className="font-semibold text-neutral-700">File Location:</span>
+              <code className="block bg-neutral-50 p-2 rounded font-mono text-xs mt-1 overflow-x-auto">
+                {skill.filePath}
+              </code>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-neutral-500" />
+              <span className="font-semibold text-neutral-700">Last Modified:</span>
+              <span className="text-neutral-600">
+                {new Date(skill.lastModified).toLocaleString()}
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="modal-footer">
+        <div className="flex justify-between p-6 border-t gap-3">
           {skill.location !== 'plugin' && (
-            <button
+            <Button
               onClick={() => onDelete(skill)}
-              className="btn-danger"
+              variant="destructive"
               data-testid="delete-skill-btn"
             >
+              <Trash2 className="h-4 w-4 mr-2" />
               Delete Skill
-            </button>
+            </Button>
           )}
-          <button onClick={onClose} className="btn-secondary">
+          <Button onClick={onClose} variant="secondary" className={skill.location === 'plugin' ? 'ml-auto' : ''}>
             Close
-          </button>
+          </Button>
         </div>
       </div>
     </div>
