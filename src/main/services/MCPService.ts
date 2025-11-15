@@ -5,22 +5,29 @@ import { spawn, ChildProcess } from 'child_process';
 import type { MCPServer, MCPServerConfig, MCPConnectionTestResult } from '@/shared/types';
 
 /**
+ * @deprecated This service is deprecated. Use ClaudeService for MCP server management.
+ *
  * Service for managing MCP (Model Context Protocol) servers
  * Handles configuration, validation, testing, and execution
  *
- * Configuration files:
- * - User level: ~/.claude/mcp-servers.json (global, available to all projects)
+ * ⚠️ DEPRECATED: This implementation references the non-existent ~/.claude/mcp-servers.json file.
+ * The actual storage location is ~/.claude.json (managed by Claude CLI).
  *
- * NOTE: Claude Owl is a standalone desktop application with no project context.
- * Users launch it from Applications folder, not from a specific project.
- * Therefore, we only support user-level MCP server configurations.
- * For project-specific MCP servers, users should edit .mcp.json directly in their project.
+ * Use ClaudeService instead, which:
+ * - Reads from ~/.claude.json correctly
+ * - Uses Claude CLI for add/remove operations
+ * - Handles both user-level and project-level servers
+ *
+ * See: src/main/services/ClaudeService.ts
+ * See: docs/adr-001-settings-management-redesign.md
  */
 export class MCPService {
   private userMcpPath: string;
   private testingServers: Map<string, ChildProcess> = new Map();
 
   constructor() {
+    // ⚠️ INCORRECT PATH - This file doesn't exist in Claude Code
+    // Actual storage: ~/.claude.json
     this.userMcpPath = path.join(homedir(), '.claude', 'mcp-servers.json');
   }
 
