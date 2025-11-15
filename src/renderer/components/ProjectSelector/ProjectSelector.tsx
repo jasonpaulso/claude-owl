@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useProjects } from '../../hooks/useProjects';
 import { useProjectContext } from '../../contexts/ProjectContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card';

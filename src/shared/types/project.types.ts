@@ -66,7 +66,7 @@ export interface ProjectInfo {
   name: string;
 
   // Project metadata
-  lastSessionId?: string;
+  lastSessionId?: string | undefined;
   hasTrustAccepted: boolean;
 
   // Feature counts for display

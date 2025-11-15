@@ -11,7 +11,7 @@ type TabType = 'user' | 'project' | 'managed';
 
 export const SettingsEditor: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('user');
-  const { selectedProject, scope } = useProjectContext();
+  const { selectedProject } = useProjectContext();
 
   const renderTabContent = () => {
     // If project tab is selected, show ProjectSelector first
