@@ -124,7 +124,11 @@ describe.skip('ClaudeService - MCP Methods', () => {
       };
 
       mockedExec.mockImplementation((cmd, callback) => {
-        callback?.(new Error('Command failed') as never, { stdout: '', stderr: 'Error occurred' } as never, 'Error occurred');
+        callback?.(
+          new Error('Command failed') as never,
+          { stdout: '', stderr: 'Error occurred' } as never,
+          'Error occurred'
+        );
         return undefined as never;
       });
 
@@ -149,7 +153,11 @@ describe.skip('ClaudeService - MCP Methods', () => {
 
     it('should handle remove errors', async () => {
       mockedExec.mockImplementation((cmd, callback) => {
-        callback?.(new Error('Server not found') as never, { stdout: '', stderr: 'Error' } as never, 'Error');
+        callback?.(
+          new Error('Server not found') as never,
+          { stdout: '', stderr: 'Error' } as never,
+          'Error'
+        );
         return undefined as never;
       });
 
@@ -231,7 +239,11 @@ describe.skip('ClaudeService - MCP Methods', () => {
 
     it('should return null on error', async () => {
       mockedExec.mockImplementation((cmd, callback) => {
-        callback?.(new Error('Not found') as never, { stdout: '', stderr: 'Error' } as never, 'Error');
+        callback?.(
+          new Error('Not found') as never,
+          { stdout: '', stderr: 'Error' } as never,
+          'Error'
+        );
         return undefined as never;
       });
 

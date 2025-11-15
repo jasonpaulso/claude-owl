@@ -110,10 +110,7 @@ Workflow content`;
       // Create user command
       const userDir = path.join(testUserDir, 'commands');
       await fs.ensureDir(userDir);
-      await fs.writeFile(
-        path.join(userDir, 'user-cmd.md'),
-        '---\ndescription: User\n---\nContent'
-      );
+      await fs.writeFile(path.join(userDir, 'user-cmd.md'), '---\ndescription: User\n---\nContent');
 
       // Create project command
       const projectDir = path.join(testProjectDir, 'commands');
@@ -140,10 +137,7 @@ Workflow content`;
         path.join(commandsDir, 'root-cmd.md'),
         '---\ndescription: Root\n---\nContent'
       );
-      await fs.writeFile(
-        path.join(gitDir, 'git-cmd.md'),
-        '---\ndescription: Git\n---\nContent'
-      );
+      await fs.writeFile(path.join(gitDir, 'git-cmd.md'), '---\ndescription: Git\n---\nContent');
 
       const filter: CommandFilter = { namespace: ['git'] };
       const commands = await commandsService.listAllCommands(filter);
@@ -176,14 +170,8 @@ Workflow content`;
       const commandsDir = path.join(testUserDir, 'commands');
       await fs.ensureDir(commandsDir);
 
-      await fs.writeFile(
-        path.join(commandsDir, 'zebra.md'),
-        '---\ndescription: Z\n---\nContent'
-      );
-      await fs.writeFile(
-        path.join(commandsDir, 'alpha.md'),
-        '---\ndescription: A\n---\nContent'
-      );
+      await fs.writeFile(path.join(commandsDir, 'zebra.md'), '---\ndescription: Z\n---\nContent');
+      await fs.writeFile(path.join(commandsDir, 'alpha.md'), '---\ndescription: A\n---\nContent');
 
       const sort: CommandSortOptions = { field: 'name', direction: 'asc' };
       const commands = await commandsService.listAllCommands(undefined, sort);
@@ -318,9 +306,7 @@ Test content`;
         content: 'Content',
       };
 
-      await expect(commandsService.createCommand(options)).rejects.toThrow(
-        /already exists/
-      );
+      await expect(commandsService.createCommand(options)).rejects.toThrow(/already exists/);
     });
 
     it('should create project command', async () => {
@@ -348,10 +334,7 @@ Test content`;
       await fs.ensureDir(commandsDir);
 
       const filePath = path.join(commandsDir, 'test.md');
-      await fs.writeFile(
-        filePath,
-        '---\ndescription: Old description\n---\nOriginal content'
-      );
+      await fs.writeFile(filePath, '---\ndescription: Old description\n---\nOriginal content');
 
       const newFrontmatter: CommandFrontmatter = {
         description: 'New description',
@@ -376,10 +359,7 @@ Test content`;
       await fs.ensureDir(commandsDir);
 
       const filePath = path.join(commandsDir, 'test.md');
-      await fs.writeFile(
-        filePath,
-        '---\ndescription: Test\n---\nOld content'
-      );
+      await fs.writeFile(filePath, '---\ndescription: Test\n---\nOld content');
 
       const options: CommandUpdateOptions = {
         filePath,
@@ -398,10 +378,7 @@ Test content`;
       await fs.ensureDir(commandsDir);
 
       const oldPath = path.join(commandsDir, 'test.md');
-      await fs.writeFile(
-        oldPath,
-        '---\ndescription: Test\n---\nContent'
-      );
+      await fs.writeFile(oldPath, '---\ndescription: Test\n---\nContent');
 
       const options: CommandUpdateOptions = {
         filePath: oldPath,
@@ -433,10 +410,7 @@ Test content`;
       await fs.ensureDir(commandsDir);
 
       const filePath = path.join(commandsDir, 'test.md');
-      await fs.writeFile(
-        filePath,
-        '---\ndescription: Test\n---\nContent'
-      );
+      await fs.writeFile(filePath, '---\ndescription: Test\n---\nContent');
 
       const options: CommandDeleteOptions = {
         filePath,
@@ -453,10 +427,7 @@ Test content`;
       await fs.ensureDir(commandsDir);
 
       const filePath = path.join(commandsDir, 'test.md');
-      await fs.writeFile(
-        filePath,
-        '---\ndescription: Test\n---\nContent'
-      );
+      await fs.writeFile(filePath, '---\ndescription: Test\n---\nContent');
 
       const options: CommandDeleteOptions = {
         filePath,
@@ -486,10 +457,7 @@ Test content`;
       await fs.ensureDir(commandsDir);
 
       const oldPath = path.join(commandsDir, 'test.md');
-      await fs.writeFile(
-        oldPath,
-        '---\ndescription: Test\n---\nContent'
-      );
+      await fs.writeFile(oldPath, '---\ndescription: Test\n---\nContent');
 
       const options: CommandMoveOptions = {
         filePath: oldPath,
@@ -509,10 +477,7 @@ Test content`;
       await fs.ensureDir(gitDir);
 
       const oldPath = path.join(gitDir, 'test.md');
-      await fs.writeFile(
-        oldPath,
-        '---\ndescription: Test\n---\nContent'
-      );
+      await fs.writeFile(oldPath, '---\ndescription: Test\n---\nContent');
 
       const options: CommandMoveOptions = {
         filePath: oldPath,
@@ -555,9 +520,7 @@ Test content`;
         newNamespace: 'git',
       };
 
-      await expect(commandsService.moveCommand(options)).rejects.toThrow(
-        /already exists/
-      );
+      await expect(commandsService.moveCommand(options)).rejects.toThrow(/already exists/);
     });
   });
 });

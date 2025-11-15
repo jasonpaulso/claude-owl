@@ -24,9 +24,7 @@ describe('GitHubService', () => {
     });
 
     it('should parse folder URL with tree', () => {
-      const result = GitHubService.parseGitHubUrl(
-        'https://github.com/owner/repo/tree/main/tools'
-      );
+      const result = GitHubService.parseGitHubUrl('https://github.com/owner/repo/tree/main/tools');
 
       expect(result).toEqual({
         owner: 'owner',
@@ -197,7 +195,12 @@ describe('GitHubService', () => {
         json: async () => [],
       } as Response);
 
-      const result = await GitHubService.navigateToFolder('owner', 'repo', 'main', 'path/to/folder');
+      const result = await GitHubService.navigateToFolder(
+        'owner',
+        'repo',
+        'main',
+        'path/to/folder'
+      );
 
       expect(result?.parentPath).toBe('path/to');
     });
@@ -280,9 +283,7 @@ describe('GitHubService', () => {
 
       await GitHubService.navigateToFolder('owner', 'repo', 'develop', 'src');
 
-      expect(fetchSpy).toHaveBeenCalledWith(
-        expect.stringContaining('?ref=develop')
-      );
+      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('?ref=develop'));
     });
   });
 
@@ -364,9 +365,7 @@ describe('GitHubService', () => {
 
       await GitHubService.browseFromUrl('https://github.com/owner/repo/tree/develop/src');
 
-      expect(fetchSpy).toHaveBeenCalledWith(
-        expect.stringContaining('?ref=develop')
-      );
+      expect(fetchSpy).toHaveBeenCalledWith(expect.stringContaining('?ref=develop'));
     });
   });
 });

@@ -5,7 +5,7 @@ import { promises as fs } from 'fs';
 import os from 'os';
 
 // Mock fs module
-vi.mock('fs', async (importOriginal) => {
+vi.mock('fs', async importOriginal => {
   const actual = await importOriginal<typeof import('fs')>();
   return {
     ...actual,
@@ -50,7 +50,7 @@ describe('MCPService', () => {
         'server-123-name',
       ];
 
-      validNames.forEach((name) => {
+      validNames.forEach(name => {
         expect(() => {
           // Access private method via reflection
           (mcpService as any).validateServerName(name);
@@ -67,7 +67,7 @@ describe('MCPService', () => {
         '', // empty
       ];
 
-      invalidNames.forEach((name) => {
+      invalidNames.forEach(name => {
         expect(() => {
           (mcpService as any).validateServerName(name);
         }).toThrow();
@@ -291,7 +291,7 @@ describe('MCPService', () => {
     it('should have steps with required properties', async () => {
       const result = await mcpService.testConnection('nonexistent');
 
-      result.steps.forEach((step) => {
+      result.steps.forEach(step => {
         expect(step).toHaveProperty('name');
         expect(step).toHaveProperty('status');
         expect(['success', 'error', 'pending']).toContain(step.status);

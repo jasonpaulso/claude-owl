@@ -31,7 +31,12 @@ describe('FolderNavigator', () => {
 
   describe('Breadcrumb Navigation', () => {
     it('should render breadcrumbs correctly', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       expect(screen.getByText('testowner/testrepo')).toBeInTheDocument();
       expect(screen.getByText('tools')).toBeInTheDocument();
@@ -39,7 +44,9 @@ describe('FolderNavigator', () => {
 
     it('should show only repo name for root path', () => {
       const rootContents = { ...mockFolderContents, currentPath: '', parentPath: null };
-      render(<FolderNavigator initialContents={rootContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator initialContents={rootContents} onSelectionChange={mockOnSelectionChange} />
+      );
 
       expect(screen.getByText('testowner/testrepo')).toBeInTheDocument();
       expect(screen.queryByText('tools')).not.toBeInTheDocument();
@@ -51,7 +58,12 @@ describe('FolderNavigator', () => {
         data: { ...mockFolderContents, currentPath: '', files: [] },
       });
 
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const repoLink = screen.getByText('testowner/testrepo');
       fireEvent.click(repoLink);
@@ -69,14 +81,21 @@ describe('FolderNavigator', () => {
 
   describe('Parent Folder Link', () => {
     it('should show parent folder link when not at root', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       expect(screen.getByText('↑ Parent folder')).toBeInTheDocument();
     });
 
     it('should not show parent folder link at root', () => {
       const rootContents = { ...mockFolderContents, currentPath: '', parentPath: null };
-      render(<FolderNavigator initialContents={rootContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator initialContents={rootContents} onSelectionChange={mockOnSelectionChange} />
+      );
 
       expect(screen.queryByText('↑ Parent folder')).not.toBeInTheDocument();
     });
@@ -87,7 +106,12 @@ describe('FolderNavigator', () => {
         data: { ...mockFolderContents, currentPath: '', files: [] },
       });
 
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const parentLink = screen.getByText('↑ Parent folder');
       fireEvent.click(parentLink);
@@ -105,24 +129,39 @@ describe('FolderNavigator', () => {
 
   describe('File Selection', () => {
     it('should display all .md files', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       expect(screen.getByText('command1.md')).toBeInTheDocument();
       expect(screen.getByText('command2.md')).toBeInTheDocument();
     });
 
     it('should show file count', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       expect(screen.getByText(/2 command files in this folder/i)).toBeInTheDocument();
     });
 
     it('should toggle file selection when checkbox clicked', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const checkboxes = screen.getAllByRole('checkbox');
       // Find the checkbox for command1.md (skip the "Select All" checkbox which is first)
-      const command1Checkbox = checkboxes.find((checkbox) => {
+      const command1Checkbox = checkboxes.find(checkbox => {
         const label = checkbox.closest('label');
         return label?.textContent?.includes('command1.md');
       });
@@ -137,7 +176,12 @@ describe('FolderNavigator', () => {
     });
 
     it('should deselect file when clicked again', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const checkbox = screen.getAllByRole('checkbox')[1];
 
@@ -156,7 +200,12 @@ describe('FolderNavigator', () => {
 
   describe('Select All Functionality', () => {
     it('should select all files when "Select All" clicked', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const selectAllButton = screen.getByText(/Select All in Folder/i);
       fireEvent.click(selectAllButton);
@@ -169,7 +218,12 @@ describe('FolderNavigator', () => {
     });
 
     it('should deselect all files when all are selected', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const selectAllButton = screen.getByText(/Select All in Folder/i);
 
@@ -186,7 +240,12 @@ describe('FolderNavigator', () => {
     });
 
     it('should call onSelectionChange with correct selection', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const selectAllButton = screen.getByText(/Select All in Folder/i);
       fireEvent.click(selectAllButton);
@@ -199,7 +258,12 @@ describe('FolderNavigator', () => {
 
   describe('Folder Navigation', () => {
     it('should display folders', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       expect(screen.getByText('subfolder')).toBeInTheDocument();
     });
@@ -210,7 +274,12 @@ describe('FolderNavigator', () => {
         data: { ...mockFolderContents, currentPath: 'tools/subfolder', files: [] },
       });
 
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const folderButton = screen.getByText('subfolder');
       fireEvent.click(folderButton);
@@ -226,7 +295,12 @@ describe('FolderNavigator', () => {
     });
 
     it('should show folder count', () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       expect(screen.getByText(/1 subfolder/i)).toBeInTheDocument();
     });
@@ -278,7 +352,12 @@ describe('FolderNavigator', () => {
         mdFileCount: 0,
       };
 
-      render(<FolderNavigator initialContents={emptyContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={emptyContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       expect(
         screen.getByText(/No command files or subfolders found in this directory/i)
@@ -293,7 +372,12 @@ describe('FolderNavigator', () => {
         data: mockFolderContents,
       });
 
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const folderButton = screen.getByRole('button', { name: /subfolder/i });
       fireEvent.click(folderButton);
@@ -305,10 +389,18 @@ describe('FolderNavigator', () => {
 
     it('should disable buttons during navigation', async () => {
       mockNavigateGitHubFolder.mockImplementationOnce(
-        () => new Promise(resolve => setTimeout(() => resolve({ success: true, data: mockFolderContents }), 100))
+        () =>
+          new Promise(resolve =>
+            setTimeout(() => resolve({ success: true, data: mockFolderContents }), 100)
+          )
       );
 
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       const folderButton = screen.getByRole('button', { name: /subfolder/i });
       fireEvent.click(folderButton);
@@ -323,7 +415,12 @@ describe('FolderNavigator', () => {
 
   describe('Multi-folder Selection', () => {
     it('should maintain selection across folder navigation', async () => {
-      render(<FolderNavigator initialContents={mockFolderContents} onSelectionChange={mockOnSelectionChange} />);
+      render(
+        <FolderNavigator
+          initialContents={mockFolderContents}
+          onSelectionChange={mockOnSelectionChange}
+        />
+      );
 
       // Select a file in current folder
       const checkbox = screen.getAllByRole('checkbox')[1];
@@ -339,7 +436,12 @@ describe('FolderNavigator', () => {
           ...mockFolderContents,
           currentPath: 'tools/subfolder',
           files: [
-            { name: 'command3.md', path: 'tools/subfolder/command3.md', type: 'file' as const, size: 512 },
+            {
+              name: 'command3.md',
+              path: 'tools/subfolder/command3.md',
+              type: 'file' as const,
+              size: 512,
+            },
           ],
           mdFileCount: 1,
         },
