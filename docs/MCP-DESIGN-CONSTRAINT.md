@@ -1,6 +1,8 @@
 # MCP Servers Manager - Design Constraint Update
 
-**Date:** January 13, 2025
+**Date:** January 13, 2025 (Updated: November 15, 2025)
+
+**⚠️ IMPORTANT:** See `docs/adr-001-settings-management-redesign.md` for complete architecture decision on configuration file management.
 
 ## ⚠️ CRITICAL DESIGN CHANGE
 
@@ -24,17 +26,21 @@ Claude Owl is **NOT** a project-aware tool. Users launch it from Applications fo
 - **Project config loading**: Removed logic to read `.mcp.json` from `process.cwd()`
 
 #### ✅ Supported (Aligns with Design Constraint)
-- **User-level servers**: Add/edit/delete servers in `~/.claude/mcp-servers.json`
+- **User-level servers**: Add/edit/delete servers via Claude CLI (`claude mcp add --scope user`)
+- **Storage**: Servers stored in `~/.claude.json` under `mcpServers` key (CLI-managed)
 - **Global availability**: User-level servers available to all projects
 - **Simple interface**: No scope confusion - servers are inherently global
+- **Read-only display**: Can display project-level servers from `~/.claude.json` projects list
 
 ### Implementation Details
 
-**MCPService now:**
-- Only reads from `~/.claude/mcp-servers.json` (user-level)
+**ClaudeService:**
+- Reads from `~/.claude.json` to list all MCP servers (user + project)
+- Parses `mcpServers` for user-level servers
+- Parses `projects[path].mcpServers` for project-level servers
+- Uses CLI commands for add/remove operations (never writes `.claude.json` directly)
 - Removed `process.cwd()` usage
-- Removed project path detection
-- All servers use `scope: 'user'`
+- All user-added servers use `scope: 'user'`
 
 **UI Form now:**
 - Removed scope selector radio buttons
@@ -48,13 +54,16 @@ Claude Owl is **NOT** a project-aware tool. Users launch it from Applications fo
 
 ### How Users Add Project-Specific Servers
 
-For MCP servers that should only be available in a specific project:
+For MCP servers that should only be available in a specific project, users have three options:
 
-1. Open the project in your editor
-2. Edit `.mcp.json` (or `.claude/mcp.json`) in the project root
-3. Add the server configuration manually
+**Option 1: Use Claude Code CLI (Recommended)**
+```bash
+cd /path/to/project
+claude mcp add --scope project my-server
+```
+This adds the server to `~/.claude.json` under `projects["/path/to/project"].mcpServers`.
 
-**Example `.mcp.json`:**
+**Option 2: Manually edit `.mcp.json` in project root**
 ```json
 {
   "mcpServers": {
@@ -65,6 +74,10 @@ For MCP servers that should only be available in a specific project:
   }
 }
 ```
+
+**Option 3: Future Claude Owl Phase 2**
+- Select project from projects list
+- Add server via UI (calls `claude mcp add --scope project` under the hood)
 
 This approach keeps Claude Owl simple and maintains its design principle: **a standalone visual configuration tool for global Claude Code settings**.
 
@@ -97,9 +110,15 @@ All tests updated to reflect user-level only management:
 This change ensures Claude Owl remains true to its design principle:
 > Claude Owl is a standalone desktop application that manages global Claude Code settings, launched from Applications folder with no project context.
 
-Users who need project-specific MCP servers should:
-- Use their code editor to edit `.mcp.json`
-- Or use Claude Code's `/mcp` command to manage project servers
+**Current Phase (Phase 1):**
+- Claude Owl manages **user-level** MCP servers (available globally)
+- Users add servers via Claude Owl UI → Calls `claude mcp add --scope user`
+- Servers stored in `~/.claude.json` under `mcpServers` key
 
-Claude Owl handles the common case: global MCP server configuration.
+**Future Phase (Phase 2):**
+- User selects a project from `~/.claude.json` projects list
+- Claude Owl displays project-specific MCP servers (read-only or via CLI)
+- Users can add project servers via CLI wrapper in Claude Owl UI
+
+Claude Owl handles the common case: **global MCP server configuration**, with project-specific management coming in Phase 2.
 

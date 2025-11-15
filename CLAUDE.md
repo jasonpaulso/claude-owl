@@ -169,11 +169,30 @@ npm test -- -t "should detect Claude"      # Run tests matching pattern
 
 ### Claude Code Integration
 
-Claude Owl interacts with these Claude Code directories:
-- `~/.claude/` - User-level configs (settings.json, agents/, skills/, commands/)
-- `.claude/` - Project-level configs in any directory
-- `.claude/settings.json` - Project settings
-- `.claude/settings.local.json` - Local overrides (gitignored)
+**IMPORTANT:** See `docs/adr-001-settings-management-redesign.md` for complete architecture decision.
+
+Claude Owl interacts with these Claude Code files:
+
+**User-Level Files:**
+- `~/.claude.json` - **READ ONLY** - CLI-managed, contains project tracking (used for project discovery)
+- `~/.claude/settings.json` - **READ/WRITE** - User-level settings (permissions, hooks, env vars)
+- `~/.claude/skills/` - **READ/WRITE** - User-level skills
+- `~/.claude/commands/` - **READ/WRITE** - User-level slash commands
+
+**Project-Level Files (after user selects a project):**
+- `{PROJECT}/.claude/settings.json` - **READ/WRITE** - Project-specific settings
+- `{PROJECT}/.claude/settings.local.json` - **READ/WRITE** - Local overrides (gitignored)
+- `{PROJECT}/.claude/skills/` - **READ/WRITE** - Project-specific skills
+- `{PROJECT}/.claude/hooks/` - **READ/WRITE** - Hook scripts
+- `{PROJECT}/.claude/commands/` - **READ/WRITE** - Project-specific slash commands
+- `{PROJECT}/.mcp.json` - **READ ONLY** - CLI-managed, project MCP servers
+
+**Access Policy:**
+- ✅ **User Settings**: Full read/write access to `~/.claude/settings.json`
+- ✅ **Project Discovery**: Read `~/.claude.json` to get list of projects
+- ✅ **Project Settings**: Read/write after user explicitly selects a project
+- ❌ **Never write** to `.claude.json` (CLI-managed, risk of corruption)
+- ❌ **Never assume** project context (we're a standalone app)
 
 ### File Operations
 
