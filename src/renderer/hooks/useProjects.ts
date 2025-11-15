@@ -51,13 +51,14 @@ export function useProjects() {
       const response = (await window.electronAPI.checkClaudeConfig()) as CheckClaudeConfigResponse;
 
       if (response.success && response.data) {
+        const { exists } = response.data;
         setState(prev => ({
           ...prev,
-          configExists: response.data.exists,
+          configExists: exists,
           configChecked: true,
         }));
 
-        return response.data.exists;
+        return exists;
       } else {
         setState(prev => ({
           ...prev,
@@ -112,10 +113,11 @@ export function useProjects() {
       const response = (await window.electronAPI.getProjects()) as GetProjectsResponse;
 
       if (response.success && response.data) {
+        const { projects } = response.data;
         setState(prev => ({
           ...prev,
           loading: false,
-          projects: response.data.projects,
+          projects,
           error: null,
         }));
       } else {
