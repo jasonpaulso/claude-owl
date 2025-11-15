@@ -332,8 +332,8 @@ const AgentEditModal: React.FC<AgentEditModalProps> = ({ agent, onClose, onSave 
   const [location, setLocation] = useState<'user' | 'project'>(
     (agent?.location as 'user' | 'project') || 'user'
   );
-  const [model, setModel] = useState<'sonnet' | 'opus' | 'haiku' | 'inherit' | ''>(
-    agent?.frontmatter.model || ''
+  const [model, setModel] = useState<'sonnet' | 'opus' | 'haiku' | 'inherit' | 'default'>(
+    agent?.frontmatter.model || 'default'
   );
   const [tools, setTools] = useState(agent?.frontmatter.tools?.join(', ') || '');
   const [saving, setSaving] = useState(false);
@@ -381,7 +381,7 @@ const AgentEditModal: React.FC<AgentEditModalProps> = ({ agent, onClose, onSave 
       description: description.trim(),
     };
 
-    if (model) {
+    if (model && model !== 'default') {
       frontmatter.model = model as 'sonnet' | 'opus' | 'haiku' | 'inherit';
     }
 
@@ -486,14 +486,14 @@ const AgentEditModal: React.FC<AgentEditModalProps> = ({ agent, onClose, onSave 
                 <Select
                   value={model}
                   onValueChange={value =>
-                    setModel(value as 'sonnet' | 'opus' | 'haiku' | 'inherit' | '')
+                    setModel(value as 'sonnet' | 'opus' | 'haiku' | 'inherit' | 'default')
                   }
                 >
                   <SelectTrigger id="agent-model">
-                    <SelectValue placeholder="Default" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Default</SelectItem>
+                    <SelectItem value="default">Default</SelectItem>
                     <SelectItem value="sonnet">Sonnet</SelectItem>
                     <SelectItem value="opus">Opus</SelectItem>
                     <SelectItem value="haiku">Haiku</SelectItem>
