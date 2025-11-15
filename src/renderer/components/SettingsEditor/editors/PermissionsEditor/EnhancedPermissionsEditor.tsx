@@ -310,20 +310,18 @@ export const EnhancedPermissionsEditor: React.FC<EnhancedPermissionsEditorProps>
       </div>
 
       {/* Modals */}
-      {showRuleEditor && (
-        <RuleEditorModal
-          {...(editingRule ? { rule: editingRule } : {})}
-          onSave={handleSaveRule}
-          onCancel={() => setShowRuleEditor(false)}
-        />
-      )}
+      <RuleEditorModal
+        {...(editingRule ? { rule: editingRule } : {})}
+        onSave={handleSaveRule}
+        onCancel={() => setShowRuleEditor(false)}
+        open={showRuleEditor}
+      />
 
-      {showTemplates && (
-        <RuleTemplatesModal
-          onApply={handleApplyTemplate}
-          onCancel={() => setShowTemplates(false)}
-        />
-      )}
+      <RuleTemplatesModal
+        onApply={handleApplyTemplate}
+        onCancel={() => setShowTemplates(false)}
+        open={showTemplates}
+      />
     </div>
   );
 };
