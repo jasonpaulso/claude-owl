@@ -147,13 +147,34 @@ export class SettingsService {
    * 2. Project settings
    * 3. Local settings
    * 4. Managed settings (highest priority, cannot be overridden)
+   *
+   * Note: If projectPath is not set, project and local settings will be skipped gracefully
    */
   async getEffectiveConfig(): Promise<EffectiveConfig> {
+    // Helper to safely read settings, returning empty if projectPath is missing
+    const safeReadSettings = async (level: ConfigLevel): Promise<ConfigSource> => {
+      try {
+        return await this.readSettings(level);
+      } catch (error) {
+        // If trying to access project/local without projectPath, return empty source
+        if ((level === 'project' || level === 'local') && !this.projectPath) {
+          const settingsPath = this.getSettingsPathWithoutValidation(level);
+          return {
+            level,
+            path: settingsPath,
+            exists: false,
+            content: {},
+          };
+        }
+        throw error;
+      }
+    };
+
     // Read all settings levels
     const [userSource, projectSource, localSource, managedSource] = await Promise.all([
       this.readSettings('user'),
-      this.readSettings('project'),
-      this.readSettings('local'),
+      safeReadSettings('project'),
+      safeReadSettings('local'),
       this.readSettings('managed'),
     ]);
 
@@ -169,6 +190,24 @@ export class SettingsService {
       merged,
       sources: [userSource, projectSource, localSource, managedSource],
     };
+  }
+
+  /**
+   * Get settings path without validation (for returning paths when projectPath is missing)
+   */
+  private getSettingsPathWithoutValidation(level: ConfigLevel): string {
+    switch (level) {
+      case 'user':
+        return this.userSettingsPath;
+      case 'project':
+        return this.projectPath ? path.join(this.projectPath, '.claude', 'settings.json') : '';
+      case 'local':
+        return this.projectPath ? path.join(this.projectPath, '.claude', 'settings.local.json') : '';
+      case 'managed':
+        return this.managedSettingsPath;
+      default:
+        return '';
+    }
   }
 
   /**
