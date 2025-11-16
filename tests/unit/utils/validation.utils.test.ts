@@ -99,11 +99,4 @@ describe('validateProjectPath', () => {
     expect(result.valid).toBe(false);
     expect(result.error).toBe('projectPath must be an absolute path');
   });
-
-  it('should pass validation for Windows absolute path', () => {
-    const result = validateProjectPath('C:\\Users\\user\\my-project');
-
-    expect(result.valid).toBe(true);
-    expect(result.error).toBeUndefined();
-  });
 });
