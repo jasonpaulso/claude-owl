@@ -34,9 +34,9 @@ Currently available and functional:
 - **Debug Logs** - View detailed debug logs from Claude Code operations
 - **Hooks Manager** - View, validate, and test hooks with security insights
 
-See [SCREENSHOTS.md](SCREENSHOTS.md) for feature screenshots.
+![Claude Owl Dashboard](screenshots/claude-owl-dashboard.png)
 
-![Claude Owl Dashboard](screenshots/dashboard.png)
+**[View all feature screenshots →](SCREENSHOTS.md)**
 
 ## Installation
 
