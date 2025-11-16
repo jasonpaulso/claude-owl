@@ -86,7 +86,7 @@ export const StatusLineManager: React.FC = () => {
       </div>
 
       {/* Warning Banner - Hooks Disabled */}
-      {effectiveConfig?.config.disableAllHooks && (
+      {effectiveConfig?.merged.disableAllHooks && (
         <div className="mb-6 p-4 bg-red-50 border-2 border-red-400 rounded-lg">
           <div className="flex items-start gap-3">
             <svg
@@ -104,16 +104,16 @@ export const StatusLineManager: React.FC = () => {
             </svg>
             <div className="flex-1">
               <h3 className="font-semibold text-red-900 mb-1 text-lg">
-                Status Lines Won't Work - Hooks Are Disabled
+                Status Lines Won&apos;t Work - Hooks Are Disabled
               </h3>
               <p className="text-red-800 mb-3">
-                Your settings have <strong>"disableAllHooks"</strong> enabled. This prevents status
+                Your settings have <strong>&quot;disableAllHooks&quot;</strong> enabled. This prevents status
                 lines from displaying because they rely on hooks to show session information.
               </p>
               <p className="text-red-800">
                 To enable status lines: Go to{' '}
                 <strong>Settings → User Settings → Core Config → MCP Server Management</strong> and
-                uncheck "Disable all hooks".
+                uncheck &quot;Disable all hooks&quot;.
               </p>
             </div>
           </div>

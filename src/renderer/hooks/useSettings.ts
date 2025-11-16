@@ -39,6 +39,7 @@ export function useSettings() {
     setState(prev => ({ ...prev, loading: true, error: null }));
 
     if (!window.electronAPI) {
+      console.error('[useSettings] window.electronAPI is not available');
       setState(prev => ({
         ...prev,
         loading: false,
@@ -48,10 +49,19 @@ export function useSettings() {
     }
 
     try {
+      console.log('[useSettings] Calling getEffectiveSettings...');
       const response =
         (await window.electronAPI.getEffectiveSettings()) as GetEffectiveSettingsResponse;
 
+      console.log('[useSettings] Response received:', {
+        success: response.success,
+        hasData: !!response.data,
+        error: response.error,
+        data: response.data,
+      });
+
       if (response.success && response.data) {
+        console.log('[useSettings] Settings loaded successfully');
         setState({
           loading: false,
           saving: false,
@@ -60,6 +70,7 @@ export function useSettings() {
           sources: response.data.sources,
         });
       } else {
+        console.warn('[useSettings] Response was not successful:', response.error);
         setState(prev => ({
           ...prev,
           loading: false,
@@ -67,6 +78,7 @@ export function useSettings() {
         }));
       }
     } catch (error) {
+      console.error('[useSettings] Exception during loadEffectiveSettings:', error);
       setState(prev => ({
         ...prev,
         loading: false,
