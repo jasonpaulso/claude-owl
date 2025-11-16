@@ -80,7 +80,7 @@ To get started:
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/yourusername/claude-owl.git
+git clone https://github.com/antonbelev/claude-owl.git
 cd claude-owl
 
 # Install dependencies
@@ -117,7 +117,7 @@ Claude Owl is open-source software licensed under the [MIT License](LICENSE).
 ## Support
 
 - 📖 [Documentation](docs/)
-- 💬 [Discussions](https://github.com/yourusername/claude-owl/discussions)
-- 🐛 [Issue Tracker](https://github.com/yourusername/claude-owl/issues)
+- 💬 [Discussions](https://github.com/antonbelev/claude-owl/discussions)
+- 🐛 [Issue Tracker](https://github.com/antonbelev/claude-owl/issues)
 
 ---
