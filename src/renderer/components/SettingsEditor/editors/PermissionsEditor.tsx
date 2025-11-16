@@ -297,7 +297,7 @@ export const PermissionsEditor: React.FC<PermissionsEditorProps> = ({
             id="disableBypassPermissionsMode"
             checked={permissions.disableBypassPermissionsMode === 'disable'}
             onCheckedChange={checked => {
-              const { disableBypassPermissionsMode, ...rest } = permissions;
+              const { disableBypassPermissionsMode: _, ...rest } = permissions;
               updatePermissions({
                 ...rest,
                 ...(checked && { disableBypassPermissionsMode: 'disable' }),
