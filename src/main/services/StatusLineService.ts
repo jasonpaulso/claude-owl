@@ -100,8 +100,7 @@ export class StatusLineService {
 
     // Update settings.json
     await this.updateSettings({
-      type: 'template',
-      template: templateId,
+      type: 'command',
       command: scriptPath,
       padding: 0,
     });
@@ -192,10 +191,13 @@ export class StatusLineService {
       await fs.writeFile(tmpScriptPath, script, { mode: 0o755 });
 
       try {
-        // Execute script with mock data
-        const { stdout, stderr } = await execAsync(tmpScriptPath, {
-          input: JSON.stringify(mockData, null, 2),
+        // Execute script with mock data via stdin
+        const mockDataJson = JSON.stringify(mockData, null, 2);
+        const command = `echo '${mockDataJson.replace(/'/g, "'\\''")}' | ${tmpScriptPath}`;
+
+        const { stdout, stderr } = await execAsync(command, {
           timeout: 2000,
+          shell: '/bin/bash',
           env: {
             HOME: process.env.HOME,
             USER: process.env.USER,
@@ -328,12 +330,15 @@ export class StatusLineService {
 
         const matches = line.match(pattern.regex);
         if (matches) {
-          issues.push({
+          const issue: SecurityIssue = {
             line: i + 1,
             severity: pattern.severity,
             message: pattern.message,
-            suggestion: pattern.suggestion,
-          });
+          };
+          if (pattern.suggestion) {
+            issue.suggestion = pattern.suggestion;
+          }
+          issues.push(issue);
         }
       }
     }

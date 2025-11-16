@@ -5,27 +5,8 @@
  * in Claude Code. They can be configured using templates, widgets, or custom scripts.
  */
 
-/**
- * Status line configuration type
- */
-export type StatusLineType = 'template' | 'command' | 'disabled';
-
-/**
- * Status line configuration as stored in settings.json
- */
-export interface StatusLineConfig {
-  /** Type of status line configuration */
-  type: StatusLineType;
-
-  /** Template name (when type is 'template') */
-  template?: string;
-
-  /** Path to custom command script (when type is 'command') */
-  command?: string;
-
-  /** Padding around the status line (default: 0) */
-  padding?: number;
-}
+// Re-export the official StatusLineConfig from config.types.ts
+export type { StatusLineConfig } from '../types/config.types';
 
 /**
  * Pre-built status line template definition
