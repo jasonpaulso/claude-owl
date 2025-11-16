@@ -160,7 +160,7 @@ export const StatusLineManager: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Preview Output */}
+              {/* Live Preview Output */}
               <div className="border border-gray-200 rounded-lg p-4">
                 <h3 className="font-semibold text-gray-700 mb-2 text-sm">Live Preview</h3>
                 {previewLoading ? (
@@ -170,6 +170,23 @@ export const StatusLineManager: React.FC = () => {
                     {previewOutput || 'No preview available'}
                   </div>
                 )}
+                <p className="text-xs text-gray-500 mt-2">
+                  This is how your status line will appear in the terminal
+                </p>
+              </div>
+
+              {/* Script Code */}
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-700 mb-2 text-sm">Script Code</h3>
+                <div className="bg-gray-900 text-gray-100 rounded p-3 overflow-x-auto max-h-64 overflow-y-auto">
+                  <pre className="text-xs font-mono whitespace-pre">
+                    {templates.find(t => t.id === selectedTemplateId)?.script || ''}
+                  </pre>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  This script will be created at ~/.claude/statusline-{selectedTemplateId}.sh with
+                  executable permissions
+                </p>
               </div>
 
               {/* Apply Button */}
