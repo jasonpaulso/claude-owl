@@ -70,15 +70,15 @@ export const StatusLineManager: React.FC = () => {
       </div>
 
       {/* Active Configuration */}
-      {activeConfig && (
+      {activeConfig && activeConfig.command && (
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex items-start justify-between">
             <div>
               <h3 className="font-semibold text-blue-900 mb-1">Active Status Line</h3>
               <p className="text-sm text-blue-700">
-                {activeConfig.type === 'template'
-                  ? `Template: ${activeConfig.template}`
-                  : `Custom script: ${activeConfig.command}`}
+                {activeConfig.type === 'text'
+                  ? `Text: ${activeConfig.text}`
+                  : `Script: ${activeConfig.command}`}
               </p>
             </div>
             <button
