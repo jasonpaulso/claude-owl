@@ -49,6 +49,14 @@ export const StatusLineManager: React.FC = () => {
     }
   };
 
+  const handleOpenLink = (url: string) => {
+    if (window.electronAPI?.openExternal) {
+      window.electronAPI.openExternal(url);
+    } else {
+      window.open(url, '_blank');
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6">
@@ -245,24 +253,22 @@ export const StatusLineManager: React.FC = () => {
             </p>
             <ul className="space-y-2 text-amber-800">
               <li>
-                <a
-                  href="https://github.com/sirmalloc/ccstatusline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-amber-900 font-mono text-xs"
+                <button
+                  onClick={() => handleOpenLink('https://github.com/sirmalloc/ccstatusline')}
+                  className="underline hover:text-amber-900 font-mono text-xs cursor-pointer bg-transparent border-none p-0"
                 >
                   github.com/sirmalloc/ccstatusline
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="https://github.com/rz1989s/claude-code-statusline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-amber-900 font-mono text-xs"
+                <button
+                  onClick={() =>
+                    handleOpenLink('https://github.com/rz1989s/claude-code-statusline')
+                  }
+                  className="underline hover:text-amber-900 font-mono text-xs cursor-pointer bg-transparent border-none p-0"
                 >
                   github.com/rz1989s/claude-code-statusline
-                </a>
+                </button>
               </li>
             </ul>
             <p className="text-xs text-amber-700 mt-3">
