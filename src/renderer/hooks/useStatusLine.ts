@@ -121,10 +121,10 @@ export function useStatusLine(): UseStatusLineResult {
   }, [fetchActiveConfig, fetchTemplates]);
 
   const setTemplate = useCallback(
-    async (templateId: string): Promise<boolean> => {
+    async (templateId: string): Promise<{ path: string; content: string } | null> => {
       if (!window.electronAPI) {
         setError('Not running in Electron');
-        return false;
+        return null;
       }
 
       console.log('[useStatusLine] Setting template:', templateId);
@@ -134,22 +134,25 @@ export function useStatusLine(): UseStatusLineResult {
           templateId,
         })) as SetTemplateResponse;
 
-        if (response.success) {
-          console.log('[useStatusLine] Template set successfully');
+        if (response.success && response.scriptPath && response.scriptContent) {
+          console.log('[useStatusLine] Template set successfully:', response.scriptPath);
           // Refresh active config
           await fetchActiveConfig();
-          return true;
+          return {
+            path: response.scriptPath,
+            content: response.scriptContent,
+          };
         } else {
           const errorMsg = response.error ?? 'Failed to set template';
           console.error('[useStatusLine] Failed to set template:', errorMsg);
           setError(errorMsg);
-          return false;
+          return null;
         }
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : 'Failed to set template';
         console.error('[useStatusLine] Error setting template:', errorMsg);
         setError(errorMsg);
-        return false;
+        return null;
       }
     },
     [fetchActiveConfig]

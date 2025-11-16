@@ -80,7 +80,7 @@ export class StatusLineService {
   /**
    * Set status line from a template
    */
-  async setTemplate(templateId: string): Promise<{ scriptPath: string }> {
+  async setTemplate(templateId: string): Promise<{ scriptPath: string; scriptContent: string }> {
     console.log('[StatusLineService] Setting template:', templateId);
 
     // Get template
@@ -96,7 +96,10 @@ export class StatusLineService {
     const scriptPath = path.join(this.userClaudeDir, `statusline-${templateId}.sh`);
     await fs.writeFile(scriptPath, template.script, { mode: 0o755 });
 
-    console.log('[StatusLineService] Wrote script to:', scriptPath);
+    // Ensure executable permissions (extra safety)
+    await fs.chmod(scriptPath, 0o755);
+
+    console.log('[StatusLineService] Wrote executable script to:', scriptPath);
 
     // Update settings.json
     await this.updateSettings({
@@ -105,7 +108,7 @@ export class StatusLineService {
       padding: 0,
     });
 
-    return { scriptPath };
+    return { scriptPath, scriptContent: template.script };
   }
 
   /**
@@ -139,7 +142,10 @@ export class StatusLineService {
     const scriptPath = path.join(this.userClaudeDir, `statusline-custom.${ext}`);
     await fs.writeFile(scriptPath, scriptContent, { mode: 0o755 });
 
-    console.log('[StatusLineService] Wrote custom script to:', scriptPath);
+    // Ensure executable permissions (extra safety)
+    await fs.chmod(scriptPath, 0o755);
+
+    console.log('[StatusLineService] Wrote executable custom script to:', scriptPath);
 
     // Update settings.json
     await this.updateSettings({

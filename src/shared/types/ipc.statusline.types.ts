@@ -32,6 +32,9 @@ export interface SetTemplateRequest {
 export interface SetTemplateResponse extends IPCResponse {
   /** Path where the script was written */
   scriptPath?: string;
+
+  /** The script content that was written */
+  scriptContent?: string;
 }
 
 /**

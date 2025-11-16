@@ -80,6 +80,7 @@ export function registerStatusLineHandlers() {
         return {
           success: true,
           scriptPath: result.scriptPath,
+          scriptContent: result.scriptContent,
         };
       } catch (error) {
         console.error('[StatusLineHandlers] Failed to set template:', error);

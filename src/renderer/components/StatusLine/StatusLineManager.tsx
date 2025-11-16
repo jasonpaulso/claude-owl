@@ -9,6 +9,11 @@ export const StatusLineManager: React.FC = () => {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   const [previewOutput, setPreviewOutput] = useState<string>('');
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [appliedScriptInfo, setAppliedScriptInfo] = useState<{
+    path: string;
+    content: string;
+  } | null>(null);
 
   const handleTemplateSelect = async (template: StatusLineTemplate) => {
     setSelectedTemplateId(template.id);
@@ -28,9 +33,10 @@ export const StatusLineManager: React.FC = () => {
   const handleApplyTemplate = async () => {
     if (!selectedTemplateId) return;
 
-    const success = await setTemplate(selectedTemplateId);
-    if (success) {
-      alert('Status line template applied successfully!');
+    const result = await setTemplate(selectedTemplateId);
+    if (result) {
+      setAppliedScriptInfo(result);
+      setShowSuccessModal(true);
     }
   };
 
@@ -197,6 +203,80 @@ export const StatusLineManager: React.FC = () => {
           cost, and more. Choose a pre-built template or create your own custom script.
         </p>
       </div>
+
+      {/* Success Modal */}
+      {showSuccessModal && appliedScriptInfo && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">Status Line Applied!</h2>
+                <p className="text-sm text-gray-600 mt-1">Your status line has been configured</p>
+              </div>
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {/* Script Location */}
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">Script Location</h3>
+                <div className="bg-gray-50 border border-gray-200 rounded p-3 font-mono text-sm break-all">
+                  {appliedScriptInfo.path}
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  The script has been created with executable permissions (chmod +x)
+                </p>
+              </div>
+
+              {/* Script Content */}
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-2">Script Content</h3>
+                <div className="bg-gray-900 text-gray-100 rounded p-4 overflow-x-auto">
+                  <pre className="text-xs font-mono whitespace-pre">
+                    {appliedScriptInfo.content}
+                  </pre>
+                </div>
+              </div>
+
+              {/* Next Steps */}
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
+                <h3 className="text-sm font-semibold text-blue-900 mb-2">Next Steps</h3>
+                <ul className="text-sm text-blue-800 space-y-1 list-disc list-inside">
+                  <li>Start a new Claude Code session to see your status line</li>
+                  <li>
+                    Run: <code className="bg-blue-100 px-1 rounded">claude</code>
+                  </li>
+                  <li>The status line will appear at the bottom of your terminal</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+              <button
+                onClick={() => setShowSuccessModal(false)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
