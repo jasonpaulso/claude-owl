@@ -24,6 +24,7 @@ export interface MCPAddOptions {
   name: string;
   transport: MCPTransport;
   scope: MCPScope;
+  projectPath?: string; // Required if scope === 'project'
   // For stdio transport
   command?: string;
   args?: string[];
