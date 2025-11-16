@@ -455,12 +455,53 @@ npm run test:coverage     # Coverage report
 - Global Claude Code settings (`~/.claude/settings.json`)
 - Project-level settings (if user opens a project's `.claude/settings.json`)
 - User's home directory
+- **Project list** (discovered from `~/.claude.json` - see ADR-001)
 
 ### What Claude Owl CANNOT Know
 - Which project the user is currently working on
 - What tools/frameworks are installed in user's projects
 - Project structure or dependencies
 - Current working directory
+
+### Working with Scoped Features
+
+**⚠️ IMPORTANT:** When adding features that support both user-level and project-level configurations (e.g., MCP servers, slash commands, subagents), you MUST use the unified project selection pattern defined in **[ADR-005: Project Selection UX](./docs/adr/adr-005-project-selection-ux.md)**.
+
+**Quick Reference:**
+```typescript
+import { ScopeSelector } from '@/renderer/components/common/ScopeSelector';
+import type { ProjectInfo } from '@/shared/types';
+
+// In your form component:
+const [scope, setScope] = useState<'user' | 'project'>('user');
+const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
+
+// Add to form:
+<ScopeSelector
+  scope={scope}
+  selectedProject={selectedProject}
+  onScopeChange={setScope}
+  onProjectChange={setSelectedProject}
+  compact={true}
+/>
+
+// Validate before submission:
+if (scope === 'project' && !selectedProject) {
+  setError('Please select a project');
+  return;
+}
+
+// Include in IPC request:
+const request = {
+  // ... other fields
+  scope,
+  projectPath: scope === 'project' ? selectedProject?.path : undefined,
+};
+```
+
+**See also:**
+- [ADR-005: Unified Project Selection UX](./docs/adr/adr-005-project-selection-ux.md) - Complete architecture
+- [Project Selection Implementation Guide](./docs/PROJECT_SELECTION_IMPLEMENTATION.md) - Detailed checklist
 
 ## Current State
 
