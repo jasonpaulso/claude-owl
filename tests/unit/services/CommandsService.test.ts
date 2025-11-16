@@ -317,6 +317,7 @@ Test content`;
       const options: CommandCreateOptions = {
         name: 'proj-cmd',
         location: 'project',
+        projectPath: testProjectDir,
         frontmatter,
         content: 'Project content',
       };

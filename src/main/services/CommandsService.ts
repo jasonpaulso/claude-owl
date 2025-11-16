@@ -466,9 +466,18 @@ export class CommandsService {
    * Create a new command
    */
   async createCommand(options: CommandCreateOptions): Promise<string> {
-    console.log('[CommandsService] Creating command:', options.name);
+    console.log('[CommandsService] Creating command:', {
+      name: options.name,
+      location: options.location,
+      projectPath: options.projectPath,
+    });
 
-    const { name, location, namespace, frontmatter, content } = options;
+    const { name, location, projectPath, namespace, frontmatter, content } = options;
+
+    // Validate project path when location is 'project'
+    if (location === 'project' && !projectPath) {
+      throw new Error('projectPath is required when location is "project"');
+    }
 
     // Validate command name
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
@@ -479,7 +488,11 @@ export class CommandsService {
       throw new Error('Invalid command name: must be 64 characters or less');
     }
 
-    const commandsPath = this.getCommandsPath(location);
+    // Determine commands path based on location and projectPath
+    const commandsPath = location === 'user'
+      ? this.userCommandsPath
+      : path.join(projectPath!, '.claude', 'commands');
+
     const targetDir = namespace ? path.join(commandsPath, namespace) : commandsPath;
     const commandFilePath = path.join(targetDir, `${name}.md`);
 

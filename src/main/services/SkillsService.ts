@@ -21,8 +21,17 @@ export class SkillsService {
   /**
    * Get the path for a specific location
    */
-  private getSkillsPath(location: 'user' | 'project'): string {
-    return location === 'user' ? this.userSkillsPath : this.projectSkillsPath;
+  private getSkillsPath(location: 'user' | 'project', projectPath?: string): string {
+    if (location === 'user') {
+      return this.userSkillsPath;
+    }
+
+    if (projectPath) {
+      return path.join(projectPath, '.claude', 'skills');
+    }
+
+    // Fallback to process.cwd() for backwards compatibility
+    return this.projectSkillsPath;
   }
 
   /**
@@ -117,8 +126,8 @@ export class SkillsService {
   /**
    * List all skills from a specific location
    */
-  async listSkills(location: 'user' | 'project'): Promise<Skill[]> {
-    const skillsPath = this.getSkillsPath(location);
+  async listSkills(location: 'user' | 'project', projectPath?: string): Promise<Skill[]> {
+    const skillsPath = this.getSkillsPath(location, projectPath);
 
     try {
       // Check if directory exists
@@ -152,6 +161,7 @@ export class SkillsService {
             filePath: skillPath,
             location,
             lastModified: stat.mtime,
+            ...(location === 'project' && projectPath && { projectPath }),
           };
 
           if (supportingFiles.length > 0) {
@@ -184,8 +194,8 @@ export class SkillsService {
   /**
    * Get a specific skill by name and location
    */
-  async getSkill(name: string, location: 'user' | 'project'): Promise<Skill> {
-    const skillsPath = this.getSkillsPath(location);
+  async getSkill(name: string, location: 'user' | 'project', projectPath?: string): Promise<Skill> {
+    const skillsPath = this.getSkillsPath(location, projectPath);
     const skillPath = path.join(skillsPath, name, 'SKILL.md');
 
     try {
@@ -204,6 +214,7 @@ export class SkillsService {
         filePath: skillPath,
         location,
         lastModified: stat.mtime,
+        ...(location === 'project' && projectPath && { projectPath }),
       };
 
       if (supportingFiles.length > 0) {
@@ -226,8 +237,14 @@ export class SkillsService {
     description: string,
     content: string,
     location: 'user' | 'project',
-    allowedTools?: string[]
+    allowedTools?: string[],
+    projectPath?: string
   ): Promise<Skill> {
+    // Validate projectPath for project-level skills
+    if (location === 'project' && !projectPath) {
+      throw new Error('projectPath is required when location is "project"');
+    }
+
     // Validate skill name
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
       throw new Error('Invalid skill name: must be lowercase with hyphens only');
@@ -241,9 +258,16 @@ export class SkillsService {
       throw new Error('Invalid description: must be 1024 characters or less');
     }
 
-    const skillsPath = this.getSkillsPath(location);
+    const skillsPath = this.getSkillsPath(location, projectPath);
     const skillDirPath = path.join(skillsPath, name);
     const skillFilePath = path.join(skillDirPath, 'SKILL.md');
+
+    console.log('[SkillsService] Saving skill:', {
+      name,
+      location,
+      projectPath,
+      skillsPath,
+    });
 
     // Create skills directory if it doesn't exist
     await fs.mkdir(skillsPath, { recursive: true });
@@ -264,14 +288,14 @@ export class SkillsService {
     await fs.writeFile(skillFilePath, fileContent, 'utf-8');
 
     // Return the created skill
-    return this.getSkill(name, location);
+    return this.getSkill(name, location, projectPath);
   }
 
   /**
    * Delete a skill
    */
-  async deleteSkill(name: string, location: 'user' | 'project'): Promise<void> {
-    const skillsPath = this.getSkillsPath(location);
+  async deleteSkill(name: string, location: 'user' | 'project', projectPath?: string): Promise<void> {
+    const skillsPath = this.getSkillsPath(location, projectPath);
     const skillDirPath = path.join(skillsPath, name);
 
     try {

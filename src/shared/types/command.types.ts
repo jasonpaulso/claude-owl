@@ -161,6 +161,7 @@ export interface CommandTemplate {
 export interface CommandCreateOptions {
   name: string;
   location: 'user' | 'project';
+  projectPath?: string; // Required if location === 'project'
   namespace?: string;
   frontmatter: CommandFrontmatter;
   content: string;

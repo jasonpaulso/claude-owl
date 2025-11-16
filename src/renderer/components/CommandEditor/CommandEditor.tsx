@@ -6,12 +6,14 @@ import { CommandReviewStep } from './CommandReviewStep';
 import { Alert, AlertDescription } from '@/renderer/components/ui/alert';
 import { Badge } from '@/renderer/components/ui/badge';
 import { Button } from '@/renderer/components/ui/button';
+import type { ProjectInfo } from '@/shared/types';
 
 export interface CommandEditorProps {
   command: CommandWithMetadata | undefined;
   onSave: (command: {
     name: string;
     location: 'user' | 'project';
+    projectPath?: string;
     namespace?: string | undefined;
     frontmatter: CommandFrontmatter;
     content: string;
@@ -73,6 +75,7 @@ export function CommandEditor({ command, onSave, onCancel, isLoading }: CommandE
   const [location, setLocation] = useState<'user' | 'project' | 'plugin' | 'mcp'>(
     command?.location || 'user'
   );
+  const [selectedProject, setSelectedProject] = useState<ProjectInfo | null>(null);
   const [namespace, setNamespace] = useState(command?.namespace || '');
   const [content, setContent] = useState(command?.content || '');
   const [errors, setErrors] = useState<string[]>([]);
@@ -94,13 +97,18 @@ export function CommandEditor({ command, onSave, onCancel, isLoading }: CommandE
       newErrors.push('Command content cannot be empty');
     }
 
+    // Validate project selection when location is 'project'
+    if (location === 'project' && !selectedProject) {
+      newErrors.push('Please select a project');
+    }
+
     if (newErrors.length > 0) {
       setErrors(newErrors);
       return false;
     }
 
     return true;
-  }, [name, description, content]);
+  }, [name, description, content, location, selectedProject]);
 
   const handleNextStep = useCallback(() => {
     if (!validateForm()) {
@@ -129,6 +137,7 @@ export function CommandEditor({ command, onSave, onCancel, isLoading }: CommandE
         await onSave({
           name,
           location: location as 'user' | 'project',
+          ...(location === 'project' && selectedProject?.path ? { projectPath: selectedProject.path } : {}),
           namespace: namespace || undefined,
           frontmatter: finalFrontmatter,
           content: finalContent,
@@ -138,7 +147,7 @@ export function CommandEditor({ command, onSave, onCancel, isLoading }: CommandE
         setErrors([errorMessage]);
       }
     },
-    [name, location, namespace, onSave]
+    [name, location, selectedProject, namespace, onSave]
   );
 
   const displayTitle = isEditMode ? `Edit Command: /${name}` : 'Create New Command';
@@ -190,6 +199,7 @@ export function CommandEditor({ command, onSave, onCancel, isLoading }: CommandE
                 allowedTools={allowedTools}
                 disableModelInvocation={disableModelInvocation}
                 location={location}
+                selectedProject={selectedProject}
                 namespace={namespace}
                 content={content}
                 errors={errors}
@@ -200,6 +210,7 @@ export function CommandEditor({ command, onSave, onCancel, isLoading }: CommandE
                 onToolsChange={setAllowedTools}
                 onDisableModelInvocationChange={setDisableModelInvocation}
                 onLocationChange={loc => setLocation(loc as 'user' | 'project')}
+                onProjectChange={setSelectedProject}
                 onNamespaceChange={setNamespace}
                 onContentChange={setContent}
               />

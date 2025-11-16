@@ -4,7 +4,6 @@ import { Input } from '@/renderer/components/ui/input';
 import { Textarea } from '@/renderer/components/ui/textarea';
 import { Label } from '@/renderer/components/ui/label';
 import { Button } from '@/renderer/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/renderer/components/ui/radio-group';
 import {
   Select,
   SelectContent,
@@ -15,6 +14,8 @@ import {
 import { Checkbox } from '@/renderer/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/renderer/components/ui/alert';
 import { AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
+import { ScopeSelector } from '../common/ScopeSelector';
+import type { ProjectInfo } from '@/shared/types';
 
 export interface CommandConfigFormProps {
   name: string;
@@ -24,6 +25,7 @@ export interface CommandConfigFormProps {
   allowedTools: string[];
   disableModelInvocation: boolean;
   location: 'user' | 'project' | 'plugin' | 'mcp';
+  selectedProject: ProjectInfo | null;
   namespace: string;
   content: string;
   errors: string[];
@@ -34,6 +36,7 @@ export interface CommandConfigFormProps {
   onToolsChange: (tools: string[]) => void;
   onDisableModelInvocationChange: (disabled: boolean) => void;
   onLocationChange: (location: 'user' | 'project') => void;
+  onProjectChange: (project: ProjectInfo | null) => void;
   onNamespaceChange: (namespace: string) => void;
   onContentChange: (content: string) => void;
 }
@@ -46,6 +49,7 @@ export function CommandConfigForm({
   allowedTools,
   disableModelInvocation,
   location,
+  selectedProject,
   namespace,
   content,
   errors,
@@ -56,6 +60,7 @@ export function CommandConfigForm({
   onToolsChange,
   onDisableModelInvocationChange,
   onLocationChange,
+  onProjectChange,
   onNamespaceChange,
   onContentChange,
 }: CommandConfigFormProps) {
@@ -152,29 +157,16 @@ export function CommandConfigForm({
       <div className="flex flex-col gap-4">
         <h3 className="text-lg font-semibold text-gray-900">Storage & Organization</h3>
 
-        <div className="space-y-2">
-          <Label>Location</Label>
-          <RadioGroup
-            value={location}
-            onValueChange={(v: string) => onLocationChange(v as 'user' | 'project')}
-          >
-            <div className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="user" id="location-user" />
-              <Label htmlFor="location-user" className="cursor-pointer font-normal flex-1">
-                User Commands (<code className="text-xs">~/.claude/commands/</code>)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 transition-colors">
-              <RadioGroupItem value="project" id="location-project" />
-              <Label htmlFor="location-project" className="cursor-pointer font-normal flex-1">
-                Project Commands (<code className="text-xs">.claude/commands/</code>)
-              </Label>
-            </div>
-          </RadioGroup>
-          <p className="text-sm text-gray-500">
-            User commands are personal. Project commands are shared with your team.
-          </p>
-        </div>
+        <ScopeSelector
+          scope={location as 'user' | 'project'}
+          selectedProject={selectedProject}
+          onScopeChange={onLocationChange}
+          onProjectChange={onProjectChange}
+          userLabel="User Commands"
+          projectLabel="Project Commands"
+          userDescription="Personal commands (~/.claude/commands/)"
+          projectDescription="Shared with your team (.claude/commands/)"
+        />
 
         <div className="space-y-2">
           <Label htmlFor="namespace">Namespace (optional)</Label>

@@ -24,6 +24,7 @@ export interface MCPAddOptions {
   name: string;
   transport: MCPTransport;
   scope: MCPScope;
+  projectPath?: string; // Required if scope === 'project'
   // For stdio transport
   command?: string;
   args?: string[];
@@ -104,6 +105,7 @@ export interface AddMCPServerRequest {
   name: string;
   transport: MCPTransport;
   scope: MCPScope;
+  projectPath?: string; // Required if scope === 'project'
   command?: string;
   args?: string[];
   url?: string;
@@ -126,6 +128,7 @@ export interface AddMCPServerResponse {
 export interface RemoveMCPServerRequest {
   name: string;
   scope: MCPScope;
+  projectPath?: string; // Required if scope === 'project'
 }
 
 /**
