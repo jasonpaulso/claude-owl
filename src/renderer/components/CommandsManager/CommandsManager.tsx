@@ -296,6 +296,7 @@ export const CommandsManager: React.FC = () => {
               const createOptions: {
                 name: string;
                 location: 'user' | 'project';
+                projectPath?: string;
                 namespace?: string;
                 frontmatter: any;
                 content: string;
@@ -305,6 +306,9 @@ export const CommandsManager: React.FC = () => {
                 frontmatter: commandData.frontmatter,
                 content: commandData.content,
               };
+              if (commandData.projectPath) {
+                createOptions.projectPath = commandData.projectPath;
+              }
               if (commandData.namespace) {
                 createOptions.namespace = commandData.namespace;
               }
