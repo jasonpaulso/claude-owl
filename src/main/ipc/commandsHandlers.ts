@@ -90,6 +90,7 @@ export function registerCommandsHandlers() {
       console.log('[CommandsHandlers] CREATE_COMMAND request:', {
         name: request.options.name,
         location: request.options.location,
+        projectPath: request.options.projectPath,
         namespace: request.options.namespace,
       });
 
