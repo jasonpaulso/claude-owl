@@ -33,7 +33,7 @@ export interface UseStatusLineResult {
   refetch: () => Promise<void>;
 
   /** Set status line from a template */
-  setTemplate: (templateId: string) => Promise<boolean>;
+  setTemplate: (templateId: string) => Promise<{ path: string; content: string } | null>;
 
   /** Set custom status line script */
   setCustomScript: (
