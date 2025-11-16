@@ -124,11 +124,12 @@ export function useCommands(filter?: CommandFilter, sort?: CommandSortOptions) {
     async (options: {
       name: string;
       location: 'user' | 'project';
+      projectPath?: string;
       namespace?: string;
       frontmatter: CommandFrontmatter;
       content: string;
     }): Promise<{ success: boolean; filePath?: string; error?: string }> => {
-      console.log('[useCommands] Creating command:', options.name);
+      console.log('[useCommands] Creating command:', { name: options.name, location: options.location, projectPath: options.projectPath });
 
       if (!window.electronAPI) {
         return { success: false, error: 'Not running in Electron' };
