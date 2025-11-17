@@ -572,6 +572,224 @@ git checkout -b hotfix/v0.2.1-critical-fix
 
 ---
 
+## GitHub Pages: Project Website & Download Portal
+
+### Purpose
+
+While GitHub Releases hosts the binaries, a dedicated project website provides:
+- **Better First Impressions:** Professional landing page for new users
+- **Simplified Downloads:** OS detection and one-click download buttons
+- **Rich Documentation:** Feature showcase, installation guides, screenshots
+- **SEO Benefits:** Discoverable via search engines (vs buried in releases page)
+- **Community Hub:** Links to Discord, Twitter, Contributing guide
+
+### Implementation
+
+**Hosting:** GitHub Pages (`https://antonbelev.github.io/claude-owl/`)
+- ✅ Free for public repos
+- ✅ Custom domain support (optional: `claudeowl.dev`)
+- ✅ HTTPS enabled by default
+- ✅ 100 GB bandwidth/month
+- ✅ Auto-deploys from `gh-pages` branch or `/docs` folder
+
+**Technology Stack:**
+- **HTML/CSS/JavaScript** - Static site (no build step required)
+- **Tailwind CSS** - Consistent styling with main app
+- **GitHub Actions** - Auto-deploy on release
+
+**Site Structure:**
+```
+docs/
+├── index.html              # Landing page with download buttons
+├── changelog.html          # Full changelog with search/filter
+├── installation.html       # Platform-specific install guides
+├── assets/
+│   ├── styles.css         # Tailwind CSS
+│   ├── app.js             # OS detection, version API calls
+│   ├── logo.svg           # Brand assets
+│   └── screenshots/       # App screenshots
+└── CNAME                  # Custom domain (optional)
+```
+
+### Key Features
+
+#### 1. Intelligent Download Detection
+```javascript
+// Detect user's OS and show appropriate download button
+const os = detectOS(); // macOS, Windows, Linux
+const version = await fetch('/api/github/releases/latest').then(r => r.json());
+
+// Show only macOS downloads initially (Phase 1)
+if (os === 'macOS') {
+  const arch = isMacAppleSilicon() ? 'arm64' : 'x64';
+  showDownloadButton(`Claude-Owl-${version}-${arch}.dmg`);
+}
+```
+
+#### 2. Live Version Display
+- Fetches latest release from GitHub API
+- Shows version number, release date, download count
+- Links to full release notes
+
+#### 3. Embedded Changelog
+- Parses `CHANGELOG.md` from repository
+- Client-side rendering with syntax highlighting
+- Filterable by version, feature type
+
+#### 4. Installation Instructions
+- Platform-specific guides (initially macOS only)
+- Animated GIFs/videos showing drag-and-drop
+- Troubleshooting section for macOS Gatekeeper warnings
+
+### Deployment Workflow
+
+**Option 1: Deploy from `/docs` folder (Simpler)**
+```yaml
+# .github/workflows/deploy-docs.yml
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'CHANGELOG.md'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Copy changelog to docs
+      - name: Update changelog
+        run: cp CHANGELOG.md docs/changelog.md
+
+      # GitHub Pages auto-deploys from /docs
+      # No additional steps needed!
+```
+
+**Option 2: Build and deploy to `gh-pages` branch (More control)**
+```yaml
+- name: Build site
+  run: |
+    # Generate static HTML from templates
+    npm run build:docs
+
+- name: Deploy to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v3
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir: ./docs-build
+```
+
+### Content Strategy
+
+**Homepage (`index.html`):**
+```
+┌─────────────────────────────────────────────────────┐
+│  🦉 Claude Owl                                      │
+│  Visual UI for Claude Code Configuration           │
+│                                                     │
+│  [Download for macOS (v0.2.0)]                     │
+│   Intel & Apple Silicon • 120 MB                   │
+│                                                     │
+│  ✨ Features                                        │
+│  • Manage settings, MCP servers, skills            │
+│  • Visual permission rules editor                  │
+│  • No more manual JSON editing                     │
+│                                                     │
+│  📸 Screenshots  |  📖 Docs  |  💬 Community       │
+└─────────────────────────────────────────────────────┘
+```
+
+**Changelog Page (`changelog.html`):**
+- Renders `CHANGELOG.md` with:
+  - Version badges (stable, beta, alpha)
+  - Emoji icons (✨ Features, 🐛 Bug Fixes)
+  - Search/filter by version or keyword
+  - Direct links to GitHub commits
+
+**Installation Page:**
+- Video walkthrough of macOS installation
+- FAQ: "Why does macOS show a security warning?"
+- Link to issue tracker for problems
+
+### Analytics (Optional)
+
+**GitHub provides built-in stats:**
+- Page views via GitHub Insights
+- Download counts via Releases API
+- Star/fork/watch metrics
+
+**Optional: Privacy-friendly analytics**
+- [Plausible Analytics](https://plausible.io/) - Open source, GDPR-compliant
+- [GoatCounter](https://www.goatcounter.com/) - Free for open source
+
+### SEO Optimization
+
+```html
+<!-- meta tags for search engines -->
+<meta name="description" content="Claude Owl: Open-source desktop app for managing Claude Code configurations with a visual interface. macOS, Windows, Linux.">
+<meta name="keywords" content="Claude Code, AI, Developer Tools, Electron, Configuration Management">
+
+<!-- Open Graph for social sharing -->
+<meta property="og:title" content="Claude Owl - Visual Claude Code Manager">
+<meta property="og:image" content="https://antonbelev.github.io/claude-owl/assets/og-image.png">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+```
+
+### Phase 1 Restrictions
+
+**Initially (macOS-only release):**
+```javascript
+// Hide Windows/Linux downloads
+const SUPPORTED_PLATFORMS = ['macOS'];
+
+if (!SUPPORTED_PLATFORMS.includes(userOS)) {
+  showMessage('Windows and Linux support coming soon! ⏳');
+  showWaitlistSignup(); // Collect emails for launch notification
+}
+```
+
+**Update site when multi-platform ready:**
+1. Update `SUPPORTED_PLATFORMS` array
+2. Enable download buttons for Windows/Linux
+3. Deploy via git push (auto-updates via GitHub Actions)
+
+### Cost
+
+| Service | Cost |
+|---------|------|
+| GitHub Pages Hosting | **FREE** |
+| Bandwidth (100 GB/month) | **FREE** |
+| Custom Domain (optional) | $12/year |
+| **Total** | **$0-12/year** |
+
+### Success Metrics
+
+- **Traffic:** Page views per release
+- **Conversion:** Download clicks / page views
+- **Engagement:** Time on site, pages per session
+- **Community:** GitHub stars/forks growth after launches
+
+### Implementation Checklist
+
+- [ ] Create `docs/` folder with static HTML site
+- [ ] Design landing page with macOS download button
+- [ ] Add OS detection and version fetching
+- [ ] Create changelog viewer (parses CHANGELOG.md)
+- [ ] Add installation guide with screenshots
+- [ ] Configure GitHub Pages in repository settings
+- [ ] Create `.github/workflows/deploy-docs.yml` for auto-deployment
+- [ ] Test on mobile devices (responsive design)
+- [ ] Add Open Graph tags for social sharing
+- [ ] (Optional) Set up custom domain
+
+---
+
 ## References
 
 - [Semantic Versioning 2.0.0](https://semver.org/)
