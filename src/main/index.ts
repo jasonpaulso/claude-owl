@@ -38,6 +38,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
+      webSecurity: false, // Allow loading local resources in production
     },
     title: 'Claude Owl',
     titleBarStyle: 'default',
@@ -96,10 +97,12 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   } else {
     // In production, load from dist folder within asar
-    // __dirname is .../app.asar/dist/main, so ../renderer/index.html gets us to dist/renderer/index.html
-    const indexPath = path.join(__dirname, '../renderer/index.html');
+    // __dirname is .../app.asar/dist/main, so we need to go up one level to app.asar, then to dist/renderer
+    const appAsar = path.join(__dirname, '../../');
+    const indexPath = path.join(appAsar, 'dist/renderer/index.html');
     console.log('[Main] Loading from file:', indexPath);
     console.log('[Main] __dirname:', __dirname);
+    console.log('[Main] appAsar:', appAsar);
     console.log('[Main] File exists:', fs.existsSync(indexPath));
 
     // Open DevTools in production for debugging (remove this later)
