@@ -243,10 +243,11 @@ jobs:
           draft: true
           prerelease: ${{ steps.prerelease.outputs.PRERELEASE }}
           body_path: release_notes.md
+          overwrite: true
           files: |
             artifacts/macos-artifacts/**/*.dmg
             artifacts/macos-artifacts/**/*.yml
-            artifacts/windows-artifacts/**/*.exe
+            artifacts/windows-artifacts/**/*Setup*.exe
             artifacts/windows-artifacts/**/*.yml
             artifacts/linux-artifacts/**/*.AppImage
             artifacts/linux-artifacts/**/*.deb
