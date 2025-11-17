@@ -27,7 +27,7 @@
     "dev:electron": "electron-vite dev",
     "build": "electron-vite build",
     "build:renderer": "vite build",
-    "package": "electron-builder",
+    "package": "npm run build && electron-builder",
     "package:mac": "electron-builder --mac",
     "package:win": "electron-builder --win",
     "package:linux": "electron-builder --linux",

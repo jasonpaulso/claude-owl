@@ -105,9 +105,6 @@ function createWindow() {
     console.log('[Main] appAsar:', appAsar);
     console.log('[Main] File exists:', fs.existsSync(indexPath));
 
-    // Open DevTools in production for debugging (remove this later)
-    mainWindow.webContents.openDevTools();
-
     mainWindow.loadFile(indexPath).catch(err => {
       console.error('[Main] Failed to load file:', err);
       console.error('[Main] Error details:', {
