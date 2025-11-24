@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 
+### [0.2.1](https://github.com/antonbelev/claude-owl/compare/v0.1.3...v0.2.1) (2025-11-24)
+
+
+### 📚 Documentation
+
+* add Anthropic disclaimer to README and homepage ([1060a0d](https://github.com/antonbelev/claude-owl/commit/1060a0ddb2cbfe39736b04417005bbda59cefc4e))
+* add BETA badge to all GitHub Pages headers ([f22fd44](https://github.com/antonbelev/claude-owl/commit/f22fd44c1648c83cd95bb66c2746c0cc39cf42c5))
+* add macOS installation workaround and BETA indicators ([d85c8c5](https://github.com/antonbelev/claude-owl/commit/d85c8c5fa02e631bea6a59166134b3203d79ecf5))
+* add verified macOS quarantine workaround and warning banners ([1f0ad5c](https://github.com/antonbelev/claude-owl/commit/1f0ad5c30b096187aa85b822a6da90b68da93798))
+* update Anthropic legal entity name (PBC → Inc) ([6abd3b0](https://github.com/antonbelev/claude-owl/commit/6abd3b03739f29fc929153ac811b6ff6170378a8))
+
+
+### ♻️ Code Refactoring
+
+* **gh-pages:** Extract header navigation into shared component ([7778a47](https://github.com/antonbelev/claude-owl/commit/7778a474fb928f76fda4efa3b8c1af44bd5ce209))
+
+
+### 🐛 Bug Fixes
+
+* add version badge to all pages and load version script ([0a92ac7](https://github.com/antonbelev/claude-owl/commit/0a92ac781bddfd7116f27791dcf31da098b0fc8d))
+* **ci:** disable auto code signing discovery for unsigned macOS builds ([5faa180](https://github.com/antonbelev/claude-owl/commit/5faa1806be6d359e172e6ef182c877946ee0892a))
+* **gh-pages:** Embed header HTML inline to support local file:// testing ([d90683a](https://github.com/antonbelev/claude-owl/commit/d90683a173aecc265bc0c3850d0a21d5c27e3651))
+* **gh-pages:** Fix version badge and console errors on non-home pages ([a7fc618](https://github.com/antonbelev/claude-owl/commit/a7fc6188c54483a7f585a0459d81aed8712304e9))
+* **mac:** use identity null to completely disable code signing ([cad049a](https://github.com/antonbelev/claude-owl/commit/cad049a5027d210f9ac5e06b0c85a9faad0e03c3))
+
+
+### ✨ Features
+
+* **gh-pages:** Add Google Analytics 4 tracking to all pages ([4ca0b0f](https://github.com/antonbelev/claude-owl/commit/4ca0b0fa160f857d2198500a28e645af5d5ec099))
+* **gh-pages:** Configure Google Analytics with Measurement ID ([2e962b2](https://github.com/antonbelev/claude-owl/commit/2e962b277110668e752bc33ae80e5aff9728bab1))
+
 ## [0.2.0](https://github.com/antonbelev/claude-owl/compare/v0.1.3...v0.2.0) (2025-11-24)
 
 
