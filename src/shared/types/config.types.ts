@@ -12,7 +12,7 @@ export interface ClaudeSettings {
   outputStyle?: string;
   statusLine?: StatusLineConfig;
   cleanupPeriodDays?: number;
-  companyAnnouncements?: string;
+  companyAnnouncements?: string[];
 
   // Authentication & Authorization
   apiKeyHelper?: string;

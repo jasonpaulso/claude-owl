@@ -159,13 +159,40 @@ export const CoreConfigEditor: React.FC<CoreConfigEditorProps> = ({
           <Label htmlFor="companyAnnouncements">Company Announcements</Label>
           <Textarea
             id="companyAnnouncements"
-            value={settings.companyAnnouncements || ''}
-            onChange={e => updateSettings({ companyAnnouncements: e.target.value })}
-            placeholder="Startup notifications"
+            value={
+              Array.isArray(settings.companyAnnouncements)
+                ? settings.companyAnnouncements.join('\n')
+                : typeof settings.companyAnnouncements === 'string'
+                  ? settings.companyAnnouncements
+                  : ''
+            }
+            onChange={e => {
+              // Store raw string value during editing to allow newlines
+              // Type assertion is safe here - we'll convert to array on blur
+              updateSettings({ companyAnnouncements: e.target.value as unknown as string[] });
+            }}
+            onBlur={e => {
+              // Convert to proper array format when field loses focus
+              const lines = e.target.value
+                .split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+              if (lines.length > 0) {
+                updateSettings({ companyAnnouncements: lines });
+              } else {
+                // Remove the property entirely if empty
+                const { companyAnnouncements: _removed, ...rest } = settings;
+                updateSettings(rest);
+              }
+            }}
+            placeholder="Enter announcements, one per line&#10;Example: System maintenance scheduled for 2pm&#10;Example: New feature: Code review workflow"
             disabled={readOnly}
-            rows={3}
+            rows={4}
           />
-          <p className="text-sm text-neutral-600">Messages shown on startup</p>
+          <p className="text-sm text-neutral-600">
+            Messages shown on Claude Code startup. Enter one announcement per line. Empty lines are
+            ignored.
+          </p>
         </div>
       </div>
 

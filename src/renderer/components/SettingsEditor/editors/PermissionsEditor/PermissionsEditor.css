@@ -38,7 +38,7 @@
 .editor-actions {
   display: flex;
   gap: 0.4rem;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .editor-actions button {
@@ -318,7 +318,7 @@
   font-size: 0.95rem;
 }
 
-.form-group input[type="text"],
+.form-group input[type='text'],
 .form-group select,
 .form-group textarea {
   width: 100%;
@@ -336,7 +336,7 @@
   font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
 }
 
-.form-group input[type="text"]:focus,
+.form-group input[type='text']:focus,
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
@@ -373,7 +373,7 @@
   transition: all 0.2s;
 }
 
-.level-option input[type="radio"] {
+.level-option input[type='radio'] {
   display: none;
 }
 
@@ -804,7 +804,7 @@
   cursor: pointer;
 }
 
-.checkbox-label input[type="checkbox"] {
+.checkbox-label input[type='checkbox'] {
   width: auto;
   cursor: pointer;
 }

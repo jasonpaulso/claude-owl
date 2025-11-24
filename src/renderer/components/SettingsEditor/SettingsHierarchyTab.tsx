@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
-import { Lock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { useLevelSettings } from '../../hooks/useSettings';
-import { useProjectContext } from '../../contexts/ProjectContext';
-import type { ConfigLevel } from '@/shared/types';
-import { EnhancedPermissionsEditor } from './editors/PermissionsEditor/EnhancedPermissionsEditor';
-import { EnvironmentEditor } from './editors/EnvironmentEditor';
-import { CoreConfigEditor } from './editors/CoreConfigEditor';
-import { Button } from '@/renderer/components/ui/button';
-import { Badge } from '@/renderer/components/ui/badge';
 import { Alert, AlertDescription } from '@/renderer/components/ui/alert';
+import { Badge } from '@/renderer/components/ui/badge';
+import { Button } from '@/renderer/components/ui/button';
+import type { ConfigLevel } from '@/shared/types';
+import { AlertCircle, CheckCircle, Lock, XCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { useProjectContext } from '../../contexts/ProjectContext';
+import { useLevelSettings } from '../../hooks/useSettings';
 import { EmptyState } from '../common/EmptyState';
+import { CoreConfigEditor } from './editors/CoreConfigEditor';
+import { EnvironmentEditor } from './editors/EnvironmentEditor';
+import { HooksEditor } from './editors/HooksEditor';
+import { EnhancedPermissionsEditor } from './editors/PermissionsEditor/EnhancedPermissionsEditor';
+import { PluginsEditor } from './editors/PluginsEditor';
+import { SandboxEditor } from './editors/SandboxEditor';
 
 interface SettingsHierarchyTabProps {
   level: ConfigLevel;
@@ -136,6 +139,34 @@ export const SettingsHierarchyTab: React.FC<SettingsHierarchyTabProps> = ({ leve
             readOnly={isReadOnly}
           />
         );
+      case 'sandbox':
+        return (
+          <SandboxEditor
+            sandbox={settings.sandbox || {}}
+            updateSandbox={sandbox => updateSettings({ sandbox })}
+            readOnly={isReadOnly}
+          />
+        );
+      case 'hooks':
+        return (
+          <HooksEditor
+            hooks={settings.hooks || {}}
+            updateHooks={hooks => updateSettings({ hooks })}
+            readOnly={isReadOnly}
+          />
+        );
+      case 'plugins':
+        return (
+          <PluginsEditor
+            enabledPlugins={settings.enabledPlugins || {}}
+            extraKnownMarketplaces={settings.extraKnownMarketplaces || []}
+            updateEnabledPlugins={enabledPlugins => updateSettings({ enabledPlugins })}
+            updateMarketplaces={extraKnownMarketplaces =>
+              updateSettings({ extraKnownMarketplaces })
+            }
+            readOnly={isReadOnly}
+          />
+        );
       case 'raw':
         return (
           <div className="w-full">
@@ -218,7 +249,7 @@ export const SettingsHierarchyTab: React.FC<SettingsHierarchyTabProps> = ({ leve
         )}
       </div>
 
-      <div className="flex gap-2 mb-8 flex-wrap">
+      <div className="flex gap-2 mb-8 overflow-x-scroll">
         <Button
           variant={activeSection === 'core' ? 'default' : 'outline'}
           size="sm"
